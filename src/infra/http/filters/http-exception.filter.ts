@@ -62,6 +62,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.NOT_FOUND;
         }
 
+        if (exception.constructor.name === 'StudioNotFoundError') {
+            return HttpStatus.NOT_FOUND;
+        }
+
+        if (exception.constructor.name === 'RoomNotFoundError') {
+            return HttpStatus.NOT_FOUND;
+        }
+
+        if (exception.constructor.name === 'OnboardingSessionNotFoundError') {
+            return HttpStatus.NOT_FOUND;
+        }
+
         if (exception.constructor.name === 'NotAllowedError') {
             return HttpStatus.FORBIDDEN;
         }
@@ -76,6 +88,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         if (exception.constructor.name === 'WrongCurrentPasswordError') {
             return HttpStatus.UNAUTHORIZED;
+        }
+
+        if (exception.constructor.name === 'PastDateNotAllowedError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'BookingConflictError') {
+            return HttpStatus.CONFLICT;
+        }
+
+        if (exception.constructor.name === 'StudioSlugAlreadyExistsError') {
+            return HttpStatus.CONFLICT;
+        }
+
+        if (exception.constructor.name === 'SubdomainUnavailableError') {
+            return HttpStatus.CONFLICT;
         }
 
         if (exception.constructor.name === 'InvalidRefreshTokenError') {

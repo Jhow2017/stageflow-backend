@@ -1,0 +1,54 @@
+### ======================================================
+### STAGEFLOW - ONBOARDING DE ASSINATURA (CONTRATO)
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@onboardingId = REPLACE_ONBOARDING_ID
+
+### @name startOnboarding
+### ✅ Iniciar onboarding (plano + dados + domínio + pagamento)
+POST {{baseUrl}}/onboarding/start
+Content-Type: application/json
+
+{
+  "planTier": "PROFESSIONAL",
+  "billingCycle": "ANNUAL",
+  "studioName": "Rock Valley Studio",
+  "ownerName": "Carlos Mendes",
+  "ownerEmail": "contato@rockvalley.com.br",
+  "ownerPhone": "(11) 99999-9999",
+  "ownerDocument": "000.000.000-00",
+  "domainType": "SUBDOMAIN",
+  "subdomain": "rockvalley",
+  "paymentMethod": "CARD",
+  "totalAmount": 1970
+}
+
+### ✅ Consultar status de onboarding
+GET {{baseUrl}}/onboarding/{{onboardingId}}
+
+### ✅ Confirmar onboarding (simula confirmação da etapa financeira)
+POST {{baseUrl}}/onboarding/{{onboardingId}}/confirm
+Content-Type: application/json
+
+{
+  "paymentReference": "evt_payment_ok_123"
+}
+
+### ❌ Subdomínio indisponível (deve retornar 409)
+POST {{baseUrl}}/onboarding/start
+Content-Type: application/json
+
+{
+  "planTier": "STARTER",
+  "billingCycle": "MONTHLY",
+  "studioName": "Outro Studio",
+  "ownerName": "Ana",
+  "ownerEmail": "ana@studio.com",
+  "ownerPhone": "(11) 90000-0000",
+  "ownerDocument": "111.111.111-11",
+  "domainType": "SUBDOMAIN",
+  "subdomain": "rockvalley",
+  "paymentMethod": "PIX",
+  "totalAmount": 80
+}

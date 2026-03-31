@@ -24,8 +24,111 @@ model User {
     resetPasswordExpires DateTime?
     createdAt            DateTime  @default(now())
     updatedAt            DateTime  @updatedAt
+    clients              Client[]
 
     @@map("users")
+}
+
+model Studio {
+    id         String    @id @default(uuid())
+    name       String
+    slug       String    @unique
+    logoUrl    String?
+    primaryColor String?
+    openHour   Int
+    closeHour  Int
+    timezone   String    @default("America/Sao_Paulo")
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+    rooms      Room[]
+    clients    Client[]
+    bookings   Booking[]
+
+    @@map("studios")
+}
+
+model Room {
+    id           String    @id @default(uuid())
+    studioId     String
+    name         String
+    type         String
+    description  String
+    pricePerHour Decimal   @db.Decimal(10, 2)
+    capacity     Int
+    features     Json
+    imageUrl     String?
+    rating       Decimal?  @db.Decimal(3, 2)
+    reviewCount  Int?
+    active       Boolean   @default(true)
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    studio       Studio    @relation(fields: [studioId], references: [id], onDelete: Cascade)
+    bookings     Booking[]
+
+    @@index([studioId])
+    @@map("rooms")
+}
+
+model Client {
+    id          String    @id @default(uuid())
+    studioId    String
+    userId      String?
+    name        String
+    email       String
+    phone       String
+    notes       String?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    studio      Studio    @relation(fields: [studioId], references: [id], onDelete: Cascade)
+    user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+    bookings    Booking[]
+
+    @@index([studioId])
+    @@index([userId])
+    @@unique([studioId, email])
+    @@map("clients")
+}
+
+enum BookingStatus {
+    PENDING
+    CONFIRMED
+    CANCELLED
+}
+
+enum PaymentMethod {
+    PIX
+    CARD
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    FAILED
+}
+
+model Booking {
+    id            String        @id @default(uuid())
+    studioId      String
+    roomId        String
+    clientId      String
+    bookingDate   DateTime
+    startHour     Int
+    endHour       Int
+    totalPrice    Decimal       @db.Decimal(10, 2)
+    status        BookingStatus @default(CONFIRMED)
+    paymentMethod PaymentMethod?
+    paymentStatus PaymentStatus @default(PENDING)
+    paymentRef    String?
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
+    studio        Studio        @relation(fields: [studioId], references: [id], onDelete: Cascade)
+    room          Room          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+    client        Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+    @@index([studioId, bookingDate])
+    @@index([roomId, bookingDate])
+    @@index([clientId])
+    @@map("bookings")
 }
 
 model BlacklistedToken {

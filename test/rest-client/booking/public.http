@@ -1,0 +1,70 @@
+### ======================================================
+### STAGEFLOW - BOOKING PUBLICO
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@studioSlug = studio-beat-lab
+@roomId = REPLACE_ROOM_ID
+
+### ✅ Listar salas públicas por studioSlug
+GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms
+
+### ✅ Listar horários disponíveis por data
+GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms/{{roomId}}/availability?year=2026&month=4&day=1
+
+### ❌ Data passada não permitida
+GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms/{{roomId}}/availability?year=2026&month=3&day=29
+
+### @name createBookingNoAccount
+### ✅ Criar reserva pública sem criar conta
+POST {{baseUrl}}/public/studios/{{studioSlug}}/bookings
+Content-Type: application/json
+
+{
+  "roomId": "{{roomId}}",
+  "year": 2026,
+  "month": 4,
+  "day": 1,
+  "startHour": 8,
+  "endHour": 10,
+  "customerName": "Jonathan Nascimento",
+  "customerEmail": "jhonga.booking@email.com",
+  "customerPhone": "92993403737",
+  "notes": "Precisa de 2 pedestais de microfone",
+  "createAccount": false
+}
+
+### @name createBookingWithAccount
+### ✅ Criar reserva pública com criação de conta
+POST {{baseUrl}}/public/studios/{{studioSlug}}/bookings
+Content-Type: application/json
+
+{
+  "roomId": "{{roomId}}",
+  "year": 2026,
+  "month": 4,
+  "day": 2,
+  "startHour": 9,
+  "endHour": 11,
+  "customerName": "Cliente Com Conta",
+  "customerEmail": "cliente.conta@email.com",
+  "customerPhone": "11911112222",
+  "createAccount": true,
+  "paymentMethod": "PIX"
+}
+
+### ❌ Conflito de horário (deve retornar 409)
+POST {{baseUrl}}/public/studios/{{studioSlug}}/bookings
+Content-Type: application/json
+
+{
+  "roomId": "{{roomId}}",
+  "year": 2026,
+  "month": 4,
+  "day": 1,
+  "startHour": 9,
+  "endHour": 10,
+  "customerName": "Conflito de Horario",
+  "customerEmail": "conflito@email.com",
+  "customerPhone": "11900000000"
+}

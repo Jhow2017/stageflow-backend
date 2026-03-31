@@ -1,0 +1,40 @@
+---
+description: Aplicar Clean Architecture + DDD no padrão do projeto
+alwaysApply: true
+---
+
+# StageFlow Backend - Clean Architecture + DDD
+
+Sempre seguir o padrão arquitetural já usado em `auth`.
+
+## Estrutura de camadas
+
+- `core/`: abstrações compartilhadas (ex.: `Either`, erros base, `UniqueEntityID`).
+- `domain/{context}/enterprise`: entidades e value objects.
+- `domain/{context}/application`: use-cases, contratos de repositório, portas e serviços.
+- `infra/`: adapters e implementações (Prisma, HTTP controllers, guards, módulos Nest, email, etc.).
+
+## Regras obrigatórias
+
+- Use case fica em `domain/.../application/use-cases`, sem dependência de `infra`.
+- Interface de repositório fica em `domain/.../application/repositories`.
+- Implementação Prisma fica em `infra/database/prisma/repositories`.
+- Conversão persistência <-> domínio deve usar mapper em `infra/database/prisma/mappers`.
+- Controller HTTP deve ser fino: validar DTO, chamar use case e mapear resposta.
+- Erros de negócio devem ser explícitos no domínio (não em infra).
+- Não acessar Prisma diretamente em controller/use case.
+- Toda entrada HTTP deve passar por DTO com `class-validator`.
+- Em DTOs numéricos/query params, usar `class-transformer` (`@Transform`) para converter tipos.
+- Nunca aceitar campos extras no payload quando houver DTO (seguir `whitelist` + `forbidNonWhitelisted` globais).
+- Regras de negócio (ex.: conflito, data passada, janela de horário) ficam no use case, não no controller.
+- Toda rota nova deve ser documentada com Swagger (`@ApiTags`, `@ApiOperation`, `@ApiResponse`).
+- Rotas com path/query params devem usar `@ApiParam` e `@ApiQuery` quando aplicável.
+- DTOs de request/response devem usar `@ApiProperty`/`@ApiPropertyOptional` com exemplos.
+- Rotas protegidas devem usar `@ApiBearerAuth`.
+
+## Convenções de implementação
+
+- Seguir nomes e organização já usados em `auth`.
+- Reutilizar `core` para IDs, erros e padrões de retorno.
+- Registrar providers/módulos no `infra` com injeção por contrato da camada de domínio.
+- Validar build local (`yarn build`) após mudanças de rota/DTO para garantir contratos válidos.

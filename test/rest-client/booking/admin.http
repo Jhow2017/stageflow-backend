@@ -1,0 +1,22 @@
+### ======================================================
+### STAGEFLOW - BOOKING ADMIN
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@studioSlug = studio-beat-lab
+@adminToken = REPLACE_ADMIN_TOKEN
+
+### ✅ Listar reservas do studio (admin)
+GET {{baseUrl}}/admin/studios/{{studioSlug}}/bookings
+Authorization: Bearer {{adminToken}}
+
+### ✅ Listar clientes do studio (admin)
+GET {{baseUrl}}/admin/studios/{{studioSlug}}/clients
+Authorization: Bearer {{adminToken}}
+
+### ❌ Sem token (401)
+GET {{baseUrl}}/admin/studios/{{studioSlug}}/bookings
+
+### ❌ Token inválido (401)
+GET {{baseUrl}}/admin/studios/{{studioSlug}}/clients
+Authorization: Bearer token-invalido
