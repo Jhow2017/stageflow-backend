@@ -111,4 +111,10 @@ export class PrismaRoomsRepository implements RoomsRepository {
 
         return PrismaRoomMapper.toDomain(room);
     }
+
+    async countByStudioId(studioId: string): Promise<number> {
+        return this.prisma.room.count({
+            where: { studioId },
+        });
+    }
 }

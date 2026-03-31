@@ -3,6 +3,7 @@ import { Studio } from '../../enterprise/entities/studio';
 export interface CreateStudioRequest {
     name: string;
     slug: string;
+    planTier: 'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE';
     logoUrl?: string | null;
     primaryColor?: string | null;
     openHour: number;

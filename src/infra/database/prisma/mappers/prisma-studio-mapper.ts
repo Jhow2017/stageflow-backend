@@ -10,6 +10,7 @@ export class PrismaStudioMapper {
             {
                 name: raw.name,
                 slug: raw.slug,
+                planTier: raw.planTier,
                 logoUrl: raw.logoUrl,
                 primaryColor: raw.primaryColor,
                 openHour: raw.openHour,

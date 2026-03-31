@@ -31,4 +31,5 @@ export abstract class RoomsRepository {
     abstract findAvailableSlotsByDate(params: FindAvailableSlotsRequest): Promise<number[]>;
     abstract create(data: CreateRoomRequest): Promise<Room>;
     abstract update(data: UpdateRoomRequest): Promise<Room>;
+    abstract countByStudioId(studioId: string): Promise<number>;
 }

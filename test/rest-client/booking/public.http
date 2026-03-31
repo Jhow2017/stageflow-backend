@@ -3,7 +3,7 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@studioSlug = studio-beat-lab
+@studioSlug = rockvalley
 @roomId = REPLACE_ROOM_ID
 
 ### ✅ Listar salas públicas por studioSlug

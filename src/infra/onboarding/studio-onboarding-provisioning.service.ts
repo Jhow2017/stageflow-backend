@@ -51,6 +51,7 @@ export class StudioOnboardingProvisioningService implements StudioProvisioningSe
         const studio = await this.studiosRepository.create({
             name: session.studioName,
             slug: session.subdomain ?? `studio-${session.id.toString().slice(0, 8)}`,
+            planTier: session.planTier,
             openHour: 8,
             closeHour: 22,
             timezone: 'America/Sao_Paulo',

@@ -106,6 +106,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.CONFLICT;
         }
 
+        if (exception.constructor.name === 'RoomLimitReachedError') {
+            return HttpStatus.CONFLICT;
+        }
+
         if (exception.constructor.name === 'InvalidRefreshTokenError') {
             return HttpStatus.UNAUTHORIZED;
         }

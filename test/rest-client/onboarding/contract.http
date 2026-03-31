@@ -3,7 +3,7 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@onboardingId = REPLACE_ONBOARDING_ID
+@onboardingId = 33dada2f-ac85-44e1-b8d0-2d792b53d0ea
 
 ### @name startOnboarding
 ### ✅ Iniciar onboarding (plano + dados + domínio + pagamento)
@@ -33,6 +33,20 @@ Content-Type: application/json
 
 {
   "paymentReference": "evt_payment_ok_123"
+}
+
+### ✅ Adicionar sala via Settings (respeita limite do plano)
+POST {{baseUrl}}/settings/studios/{{onboarding.response.body.onboarding.studioId}}/rooms
+Authorization: Bearer REPLACE_ADMIN_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Sala A - Ensaio",
+  "type": "rehearsal",
+  "description": "Ideal para bandas e ensaios.",
+  "pricePerHour": 80,
+  "capacity": 6,
+  "features": ["Bateria acústica", "PA 1000W"]
 }
 
 ### ❌ Subdomínio indisponível (deve retornar 409)

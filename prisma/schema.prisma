@@ -33,6 +33,7 @@ model Studio {
     id         String    @id @default(uuid())
     name       String
     slug       String    @unique
+    planTier   PlanTier  @default(STARTER)
     logoUrl    String?
     primaryColor String?
     openHour   Int
@@ -45,6 +46,12 @@ model Studio {
     bookings   Booking[]
 
     @@map("studios")
+}
+
+enum PlanTier {
+    STARTER
+    PROFESSIONAL
+    ENTERPRISE
 }
 
 model Room {

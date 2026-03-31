@@ -4,6 +4,7 @@ import { UniqueEntityID } from '../../../../core/entities/unique-entity-id';
 export interface StudioProps {
     name: string;
     slug: string;
+    planTier: 'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE';
     logoUrl: string | null;
     primaryColor: string | null;
     openHour: number;
@@ -20,6 +21,10 @@ export class Studio extends Entity<StudioProps> {
 
     get slug(): string {
         return this.props.slug;
+    }
+
+    get planTier(): 'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE' {
+        return this.props.planTier;
     }
 
     get logoUrl(): string | null {
@@ -53,6 +58,7 @@ export class Studio extends Entity<StudioProps> {
     update(data: {
         name: string;
         slug: string;
+        planTier: 'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE';
         logoUrl: string | null;
         primaryColor: string | null;
         openHour: number;
@@ -61,6 +67,7 @@ export class Studio extends Entity<StudioProps> {
     }): void {
         this.props.name = data.name;
         this.props.slug = data.slug;
+        this.props.planTier = data.planTier;
         this.props.logoUrl = data.logoUrl;
         this.props.primaryColor = data.primaryColor;
         this.props.openHour = data.openHour;
@@ -79,6 +86,7 @@ export class Studio extends Entity<StudioProps> {
         return new Studio(
             {
                 ...props,
+                planTier: props.planTier ?? 'STARTER',
                 timezone: props.timezone ?? 'America/Sao_Paulo',
                 createdAt: props.createdAt ?? new Date(),
                 updatedAt: props.updatedAt ?? new Date(),

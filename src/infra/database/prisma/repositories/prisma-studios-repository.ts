@@ -37,6 +37,7 @@ export class PrismaStudiosRepository implements StudiosRepository {
             data: {
                 name: data.name,
                 slug: data.slug,
+                planTier: data.planTier,
                 logoUrl: data.logoUrl ?? null,
                 primaryColor: data.primaryColor ?? null,
                 openHour: data.openHour,
@@ -54,6 +55,7 @@ export class PrismaStudiosRepository implements StudiosRepository {
             data: {
                 name: data.name,
                 slug: data.slug,
+                planTier: data.planTier,
                 logoUrl: data.logoUrl ?? null,
                 primaryColor: data.primaryColor ?? null,
                 openHour: data.openHour,

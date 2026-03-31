@@ -46,6 +46,8 @@ import { SubdomainAvailabilityChecker } from '../../domain/onboarding/applicatio
 import { StudioSubdomainAvailabilityChecker } from '../onboarding/studio-subdomain-availability-checker';
 import { StudioProvisioningService } from '../../domain/onboarding/application/services/studio-provisioning-service';
 import { StudioOnboardingProvisioningService } from '../onboarding/studio-onboarding-provisioning.service';
+import { SettingsRoomsController } from './controllers/settings-rooms.controller';
+import { CreateStudioRoomFromSettingsUseCase } from '../../domain/booking/application/use-cases/create-studio-room-from-settings';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
@@ -66,6 +68,7 @@ import { StudioOnboardingProvisioningService } from '../onboarding/studio-onboar
         ListStudioBookingsController,
         ListStudioClientsController,
         OnboardingController,
+        SettingsRoomsController,
     ],
     providers: [
         RegisterUserUseCase,
@@ -80,6 +83,7 @@ import { StudioOnboardingProvisioningService } from '../onboarding/studio-onboar
         ListPublicRoomsUseCase,
         ListAvailableSlotsByDateUseCase,
         CreatePublicBookingUseCase,
+        CreateStudioRoomFromSettingsUseCase,
         ListStudioBookingsUseCase,
         ListStudioClientsUseCase,
         StartOnboardingUseCase,
