@@ -27,8 +27,6 @@ export class StudioOnboardingProvisioningService implements StudioProvisioningSe
 
         let ownerUserId: string;
         if (existingUser) {
-            existingUser.setRole(Role.ADMIN);
-            await this.usersRepository.save(existingUser);
             ownerUserId = existingUser.id.toString();
         } else {
             const temporaryPassword = randomBytes(16).toString('hex');
@@ -38,7 +36,7 @@ export class StudioOnboardingProvisioningService implements StudioProvisioningSe
                 name: session.ownerName,
                 email: session.ownerEmail,
                 password: hashedPassword,
-                role: Role.ADMIN,
+                role: Role.USER,
                 refreshToken: null,
                 resetPasswordToken: null,
                 resetPasswordExpires: null,

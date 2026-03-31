@@ -3,14 +3,14 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@adminToken = REPLACE_STUDIO_ADMIN_TOKEN
+@subscriberToken = REPLACE_SUBSCRIBER_TOKEN
 @ownerToken = REPLACE_OWNER_TOKEN
 @studioId = REPLACE_STUDIO_ID
 @otherStudioId = REPLACE_OTHER_STUDIO_ID
 
 ### ✅ Criar Sala A
 POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 
 ### ✅ Criar Sala B
 POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
 
 {
@@ -42,7 +42,7 @@ Content-Type: application/json
 
 ### ✅ Criar Sala C
 POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
 
 {
@@ -59,7 +59,7 @@ Content-Type: application/json
 ### ❌ Exceder limite do plano (Starter=1, Professional=3, Enterprise=ilimitado)
 ### Para Professional, essa 4a criação deve retornar 409 RoomLimitReachedError.
 POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
 
 {
@@ -85,9 +85,9 @@ Content-Type: application/json
   "features": ["Teste"]
 }
 
-### ❌ ADMIN de outro studio não pode operar (403)
+### ❌ USER assinante de outro studio não pode operar (403)
 POST {{baseUrl}}/settings/studios/{{otherStudioId}}/rooms
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
 
 {

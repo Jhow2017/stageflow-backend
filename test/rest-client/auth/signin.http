@@ -3,10 +3,10 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@email = jhongama_jesus@hotmail.com
+@email = jhowgama2@gmail.com
 @password = senha123
 @ownerEmail = jhongama_jesus@hotmail.com
-@ownerPassword = Senha132
+@ownerPassword = 123456789
 @accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyZWFjNzc4My1iMTA1LTQwOGUtOGRmMC0zY2EzMmQ3N2RiNjAiLCJpYXQiOjE3NzQ5ODgwODMsImV4cCI6MTc3NTU5Mjg4M30.JCHxCUH8O80g5MNHmMt-FEsgVMMhPQWxUQqZIJR9xlg
 
 

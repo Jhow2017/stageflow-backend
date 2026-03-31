@@ -2,19 +2,18 @@ import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListStudioClientsUseCase } from '../../../domain/booking/application/use-cases/list-studio-clients';
-import { AdminGuard } from '../../auth/admin.guard';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { User } from '../../../domain/auth/enterprise/entities/user';
 
 @ApiTags('Clients Admin')
 @Controller('/admin/studio-ops/:studioSlug/clients')
-@UseGuards(JwtAuthGuard, AdminGuard)
+@UseGuards(JwtAuthGuard)
 export class ListStudioClientsController {
     constructor(private listStudioClientsUseCase: ListStudioClientsUseCase) { }
 
     @Get()
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Listar clientes do studio (admin)' })
+    @ApiOperation({ summary: 'Listar clientes do studio (assinante USER vinculado ou OWNER)' })
     @ApiParam({ name: 'studioSlug', example: 'studio-beat-lab' })
     @ApiResponse({
         status: 200,
@@ -35,7 +34,7 @@ export class ListStudioClientsController {
         },
     })
     @ApiResponse({ status: 401, description: 'Não autenticado' })
-    @ApiResponse({ status: 403, description: 'Acesso negado (apenas admin)' })
+    @ApiResponse({ status: 403, description: 'Acesso negado para este studio (sem vínculo)' })
     @ApiResponse({ status: 404, description: 'Studio não encontrado' })
     async handle(@Param('studioSlug') studioSlug: string, @Req() req: Request) {
         const user = req.user as User;

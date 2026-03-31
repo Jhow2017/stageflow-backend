@@ -1,0 +1,130 @@
+### ======================================================
+### STAGEFLOW - FLUXO 1 A 8 (ASSINATURA -> SETTINGS/SALAS)
+### ======================================================
+### Objetivo:
+### 1) Escolher plano
+### 2) Dados do estúdio
+### 3) Domínio
+### 4) Forma de pagamento (simulada)
+### 5) Confirmar onboarding (OWNER)
+### 6) "Entrar no dashboard" (login do assinante USER do studio)
+### 7) Cadastrar salas no settings conforme plano
+### ======================================================
+
+@baseUrl = http://localhost:4000  
+@ownerToken = REPLACE_OWNER_TOKEN
+@subscriberEmail = contato@rockvalley.com.br
+@subscriberPassword = REPLACE_SUBSCRIBER_PASSWORD
+@subdomain = rockvalley-{{$timestamp}}
+
+### ------------------------------------------------------
+### PASSO 1-5: START ONBOARDING
+### ------------------------------------------------------
+### @name startOnboarding
+POST {{baseUrl}}/onboarding/start
+Content-Type: application/json
+
+{
+  "planTier": "PROFESSIONAL",
+  "billingCycle": "MONTHLY",
+  "studioName": "Rock Valley Studio",
+  "ownerName": "Carlos Mendes",
+  "ownerEmail": "{{subscriberEmail}}",
+  "ownerPhone": "(11) 99999-9999",
+  "ownerDocument": "000.000.000-00",
+  "domainType": "SUBDOMAIN",
+  "subdomain": "{{subdomain}}",
+  "paymentMethod": "CARD",
+  "totalAmount": 197
+}
+
+### ------------------------------------------------------
+### PASSO 5.1: CONSULTAR STATUS (PENDING_PAYMENT)
+### ------------------------------------------------------
+GET {{baseUrl}}/onboarding/{{startOnboarding.response.body.onboarding.id}}
+
+### ------------------------------------------------------
+### PASSO 6: CONFIRMAR PAGAMENTO (SIMULADO, PROTEGIDO)
+### Requer OWNER token
+### ------------------------------------------------------
+### @name confirmOnboarding
+POST {{baseUrl}}/onboarding/{{startOnboarding.response.body.onboarding.id}}/confirm
+Authorization: Bearer {{ownerToken}}
+Content-Type: application/json
+
+{
+  "paymentReference": "evt_payment_ok_{{$timestamp}}"
+}
+
+### ------------------------------------------------------
+### PASSO 7: "REDIRECIONA PARA DASHBOARD"
+### Aqui validamos o login do assinante USER do studio.
+### ------------------------------------------------------
+### Pré-requisito: esse email já deve existir em /auth/signup para manter senha conhecida.
+### @name loginStudioSubscriber
+POST {{baseUrl}}/auth/signin
+Content-Type: application/json
+
+{
+  "email": "{{subscriberEmail}}",
+  "password": "{{subscriberPassword}}"
+}
+
+### ------------------------------------------------------
+### PASSO 8: SETTINGS -> CADASTRAR SALAS
+### Para PROFESSIONAL: até 3 salas.
+### ------------------------------------------------------
+POST {{baseUrl}}/settings/studios/{{confirmOnboarding.response.body.onboarding.studioId}}/rooms
+Authorization: Bearer {{loginStudioSubscriber.response.body.accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala A - Ensaio",
+  "type": "rehearsal",
+  "description": "Ideal para bandas e ensaios.",
+  "pricePerHour": 80,
+  "capacity": 6,
+  "features": ["Bateria acústica", "PA 1000W"]
+}
+
+POST {{baseUrl}}/settings/studios/{{confirmOnboarding.response.body.onboarding.studioId}}/rooms
+Authorization: Bearer {{loginStudioSubscriber.response.body.accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala B - Gravação",
+  "type": "recording",
+  "description": "Sala para gravações profissionais.",
+  "pricePerHour": 150,
+  "capacity": 4,
+  "features": ["Mesa digital", "Microfones premium"]
+}
+
+POST {{baseUrl}}/settings/studios/{{confirmOnboarding.response.body.onboarding.studioId}}/rooms
+Authorization: Bearer {{loginStudioSubscriber.response.body.accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala C - Podcast",
+  "type": "podcast",
+  "description": "Ambiente para podcast.",
+  "pricePerHour": 60,
+  "capacity": 3,
+  "features": ["3 microfones", "Interface de audio"]
+}
+
+### ------------------------------------------------------
+### EXTRA: VALIDAR LIMITE DE PLANO (4a sala -> 409 no PROFESSIONAL)
+### ------------------------------------------------------
+POST {{baseUrl}}/settings/studios/{{confirmOnboarding.response.body.onboarding.studioId}}/rooms
+Authorization: Bearer {{loginStudioSubscriber.response.body.accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala D - Extra",
+  "type": "extra",
+  "description": "Teste de limite do plano.",
+  "pricePerHour": 99,
+  "capacity": 5,
+  "features": ["Teste limite"]
+}

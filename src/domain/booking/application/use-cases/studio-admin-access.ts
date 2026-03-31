@@ -18,7 +18,7 @@ export function ensureStudioAdminAccess(
         return;
     }
 
-    if (requesterRole === Role.ADMIN && studio.ownerUserId === requesterUserId) {
+    if (studio.ownerUserId === requesterUserId) {
         return;
     }
 

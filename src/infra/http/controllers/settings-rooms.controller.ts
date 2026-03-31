@@ -4,13 +4,12 @@ import { Request } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStudioRoomFromSettingsUseCase } from '../../../domain/booking/application/use-cases/create-studio-room-from-settings';
 import { User } from '../../../domain/auth/enterprise/entities/user';
-import { AdminGuard } from '../../auth/admin.guard';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { CreateSettingsRoomDto } from '../dtos/create-settings-room.dto';
 
 @ApiTags('Settings')
 @Controller('/settings/studios/:studioId/rooms')
-@UseGuards(JwtAuthGuard, AdminGuard)
+@UseGuards(JwtAuthGuard)
 export class SettingsRoomsController {
     constructor(
         private createStudioRoomFromSettingsUseCase: CreateStudioRoomFromSettingsUseCase,
@@ -18,10 +17,10 @@ export class SettingsRoomsController {
 
     @Post()
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Adicionar sala do studio respeitando limite do plano' })
+    @ApiOperation({ summary: 'Adicionar sala do studio (assinante USER vinculado ou OWNER)' })
     @ApiParam({ name: 'studioId', example: 'uuid-do-studio' })
     @ApiResponse({ status: 201, description: 'Sala criada com sucesso' })
-    @ApiResponse({ status: 403, description: 'Acesso negado para este studio' })
+    @ApiResponse({ status: 403, description: 'Acesso negado para este studio (sem vínculo)' })
     @ApiResponse({ status: 404, description: 'Studio não encontrado' })
     @ApiResponse({ status: 409, description: 'Limite de salas do plano atingido' })
     async create(
