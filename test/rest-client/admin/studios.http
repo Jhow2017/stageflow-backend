@@ -1,0 +1,19 @@
+### ======================================================
+### STAGEFLOW - ADMIN GLOBAL (OWNER)
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@ownerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjNlODUzMi01MmFhLTRkZjEtYTllNi1jMzU2NTczODNkMTkiLCJpYXQiOjE3NzQ5ODUxNzAsImV4cCI6MTc3NTU4OTk3MH0.2F9Y3iSVRYwE9pCdWwB96BoCCHteSnEqss5tRKd2mAI
+@studioId = REPLACE_STUDIO_ID
+
+### ✅ Listar studios globais (somente OWNER)
+GET {{baseUrl}}/admin/studios
+Authorization: Bearer {{ownerToken}}
+
+### ✅ Detalhar studio global (somente OWNER)
+GET {{baseUrl}}/admin/studios/{{studioId}}
+Authorization: Bearer {{ownerToken}}
+
+### ❌ Admin comum deve receber 403
+GET {{baseUrl}}/admin/studios
+Authorization: Bearer REPLACE_ADMIN_TOKEN

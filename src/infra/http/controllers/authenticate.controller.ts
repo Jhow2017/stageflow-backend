@@ -37,6 +37,7 @@ export class AuthenticateController {
                     id: 'uuid-aqui',
                     name: 'João Silva',
                     email: 'joao@email.com',
+                    role: 'USER',
                     createdAt: '2024-12-08T00:00:00.000Z',
                 },
             },
@@ -100,6 +101,7 @@ export class AuthenticateController {
                 id: user.id.toString(),
                 name: user.name,
                 email: user.email,
+                role: user.role,
                 createdAt: user.createdAt,
             },
         };

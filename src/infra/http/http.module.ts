@@ -6,6 +6,7 @@ import { AuthModule } from '../auth/auth.module';
 import { MessagingModule } from '../messaging/messaging.module';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RegisterUserController } from './controllers/register-user.controller';
+import { RegisterUserByRoleController } from './controllers/register-user-by-role.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import { GetProfileController } from './controllers/get-profile.controller';
 import { RefreshTokenController } from './controllers/refresh-token.controller';
@@ -31,11 +32,14 @@ import { ListAvailableSlotsController } from './controllers/list-available-slots
 import { CreatePublicBookingController } from './controllers/create-public-booking.controller';
 import { ListStudioBookingsController } from './controllers/list-studio-bookings.controller';
 import { ListStudioClientsController } from './controllers/list-studio-clients.controller';
+import { ListGlobalStudiosController } from './controllers/list-global-studios.controller';
 import { ListPublicRoomsUseCase } from '../../domain/booking/application/use-cases/list-public-rooms';
 import { ListAvailableSlotsByDateUseCase } from '../../domain/booking/application/use-cases/list-available-slots-by-date';
 import { CreatePublicBookingUseCase } from '../../domain/booking/application/use-cases/create-public-booking';
 import { ListStudioBookingsUseCase } from '../../domain/booking/application/use-cases/list-studio-bookings';
 import { ListStudioClientsUseCase } from '../../domain/booking/application/use-cases/list-studio-clients';
+import { ListGlobalStudiosUseCase } from '../../domain/booking/application/use-cases/list-global-studios';
+import { GetGlobalStudioDetailsUseCase } from '../../domain/booking/application/use-cases/get-global-studio-details';
 import { OnboardingController } from './controllers/onboarding.controller';
 import { StartOnboardingUseCase } from '../../domain/onboarding/application/use-cases/start-onboarding';
 import { GetOnboardingSessionUseCase } from '../../domain/onboarding/application/use-cases/get-onboarding-session';
@@ -48,11 +52,13 @@ import { StudioProvisioningService } from '../../domain/onboarding/application/s
 import { StudioOnboardingProvisioningService } from '../onboarding/studio-onboarding-provisioning.service';
 import { SettingsRoomsController } from './controllers/settings-rooms.controller';
 import { CreateStudioRoomFromSettingsUseCase } from '../../domain/booking/application/use-cases/create-studio-room-from-settings';
+import { OwnerGuard } from '../auth/owner.guard';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
     controllers: [
         RegisterUserController,
+        RegisterUserByRoleController,
         AuthenticateController,
         GetProfileController,
         RefreshTokenController,
@@ -67,6 +73,7 @@ import { CreateStudioRoomFromSettingsUseCase } from '../../domain/booking/applic
         CreatePublicBookingController,
         ListStudioBookingsController,
         ListStudioClientsController,
+        ListGlobalStudiosController,
         OnboardingController,
         SettingsRoomsController,
     ],
@@ -86,6 +93,8 @@ import { CreateStudioRoomFromSettingsUseCase } from '../../domain/booking/applic
         CreateStudioRoomFromSettingsUseCase,
         ListStudioBookingsUseCase,
         ListStudioClientsUseCase,
+        ListGlobalStudiosUseCase,
+        GetGlobalStudioDetailsUseCase,
         StartOnboardingUseCase,
         GetOnboardingSessionUseCase,
         ConfirmOnboardingUseCase,
@@ -109,6 +118,7 @@ import { CreateStudioRoomFromSettingsUseCase } from '../../domain/booking/applic
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
         },
+        OwnerGuard,
     ],
 })
 export class HttpModule { }

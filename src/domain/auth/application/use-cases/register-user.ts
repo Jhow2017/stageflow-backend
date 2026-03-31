@@ -9,6 +9,7 @@ export interface RegisterUserRequest {
     name: string;
     email: string;
     password: string;
+    role?: Role;
 }
 
 export interface RegisterUserResponse {
@@ -33,6 +34,7 @@ export class RegisterUserUseCase {
         name,
         email,
         password,
+        role,
     }: RegisterUserRequest): Promise<RegisterUserResponse> {
         const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
@@ -46,7 +48,7 @@ export class RegisterUserUseCase {
             name,
             email,
             password: hashedPassword,
-            role: Role.USER,
+            role: role ?? Role.USER,
             resetPasswordToken: null,
             resetPasswordExpires: null,
             refreshToken: null,

@@ -1,0 +1,84 @@
+### ======================================================
+### STAGEFLOW - SETTINGS / SALAS (PLANO)
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjNlODUzMi01MmFhLTRkZjEtYTllNi1jMzU2NTczODNkMTkiLCJpYXQiOjE3NzQ5ODUxNzAsImV4cCI6MTc3NTU4OTk3MH0.2F9Y3iSVRYwE9pCdWwB96BoCCHteSnEqss5tRKd2mAI
+@studioId = REPLACE_STUDIO_ID
+
+### ✅ Criar Sala A
+POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala A - Ensaio",
+  "type": "rehearsal",
+  "description": "Ideal para bandas e ensaios com bateria, amplificadores e PA completo.",
+  "pricePerHour": 80,
+  "capacity": 6,
+  "features": ["Bateria acústica", "2 amplificadores", "PA 1000W", "Ar condicionado"],
+  "rating": 4.9,
+  "reviewCount": 124
+}
+
+### ✅ Criar Sala B
+POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala B - Gravação",
+  "type": "recording",
+  "description": "Estúdio profissional com tratamento acústico e mesa de som digital.",
+  "pricePerHour": 150,
+  "capacity": 4,
+  "features": ["Mesa digital 32ch", "Microfones Neumann", "Isolamento acústico", "Pro Tools"],
+  "rating": 5.0,
+  "reviewCount": 89
+}
+
+### ✅ Criar Sala C
+POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala C - Podcast",
+  "type": "podcast",
+  "description": "Ambiente intimista para gravação de podcasts e conteúdo de áudio.",
+  "pricePerHour": 60,
+  "capacity": 3,
+  "features": ["3 microfones", "Interface Focusrite", "Webcam 4K", "Iluminação LED"],
+  "rating": 4.8,
+  "reviewCount": 56
+}
+
+### ❌ Exceder limite do plano (Starter=1, Professional=3, Enterprise=ilimitado)
+### Para Professional, essa 4a criação deve retornar 409 RoomLimitReachedError.
+POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala D - Extra",
+  "type": "extra",
+  "description": "Sala adicional para validar limite de plano.",
+  "pricePerHour": 90,
+  "capacity": 5,
+  "features": ["Iluminação", "Ar-condicionado"]
+}
+
+### ❌ Token inválido (401)
+POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
+Authorization: Bearer token-invalido
+Content-Type: application/json
+
+{
+  "name": "Sala Token Invalido",
+  "type": "test",
+  "description": "Teste de auth.",
+  "pricePerHour": 50,
+  "capacity": 2,
+  "features": ["Teste"]
+}

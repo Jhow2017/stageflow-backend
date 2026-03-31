@@ -5,7 +5,7 @@ import { AdminGuard } from '../../auth/admin.guard';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @ApiTags('Bookings Admin')
-@Controller('/admin/studios/:studioSlug/bookings')
+@Controller('/admin/studio-ops/:studioSlug/bookings')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class ListStudioBookingsController {
     constructor(private listStudioBookingsUseCase: ListStudioBookingsUseCase) { }

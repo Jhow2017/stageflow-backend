@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Studio } from '../../../../domain/booking/enterprise/entities/studio';
 import {
     CreateStudioRequest,
+    StudioGlobalSummary,
     StudiosRepository,
     UpdateStudioRequest,
 } from '../../../../domain/booking/application/repositories/studios-repository';
@@ -73,5 +74,55 @@ export class PrismaStudiosRepository implements StudiosRepository {
         });
 
         return studios.map(PrismaStudioMapper.toDomain);
+    }
+
+    async findAllWithSummary(): Promise<StudioGlobalSummary[]> {
+        const studios = await this.prisma.studio.findMany({
+            include: {
+                _count: {
+                    select: {
+                        rooms: true,
+                        bookings: true,
+                        clients: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        return studios.map((item) => ({
+            studio: PrismaStudioMapper.toDomain(item),
+            roomsCount: item._count.rooms,
+            bookingsCount: item._count.bookings,
+            clientsCount: item._count.clients,
+            status: item._count.rooms > 0 ? 'ACTIVE' : 'PENDING_SETUP',
+        }));
+    }
+
+    async findByIdWithSummary(id: string): Promise<StudioGlobalSummary | null> {
+        const studio = await this.prisma.studio.findUnique({
+            where: { id },
+            include: {
+                _count: {
+                    select: {
+                        rooms: true,
+                        bookings: true,
+                        clients: true,
+                    },
+                },
+            },
+        });
+
+        if (!studio) {
+            return null;
+        }
+
+        return {
+            studio: PrismaStudioMapper.toDomain(studio),
+            roomsCount: studio._count.rooms,
+            bookingsCount: studio._count.bookings,
+            clientsCount: studio._count.clients,
+            status: studio._count.rooms > 0 ? 'ACTIVE' : 'PENDING_SETUP',
+        };
     }
 }

@@ -8,8 +8,10 @@
   - `GET /public/studios/:studioSlug/rooms/:roomId/availability?year=&month=&day=`
   - `POST /public/studios/:studioSlug/bookings`
 - Endpoints admin:
-  - `GET /admin/studios/:studioSlug/bookings`
-  - `GET /admin/studios/:studioSlug/clients`
+  - `GET /admin/studios` (visão global, somente OWNER)
+  - `GET /admin/studios/:studioId` (visão global, somente OWNER)
+  - `GET /admin/studio-ops/:studioSlug/bookings` (operação de estúdio)
+  - `GET /admin/studio-ops/:studioSlug/clients` (operação de estúdio)
 - Endpoints de onboarding de assinatura:
   - `POST /onboarding/start`
   - `GET /onboarding/:onboardingId`
@@ -39,7 +41,7 @@ Se preferir, ainda é possível usar seed manual por SQL.
 
 - `test/rest-client/onboarding/contract.http`
 - `test/rest-client/booking/public.http`
-- `test/rest-client/booking/admin.http`
+- `test/rest-client/admin/studios.http`
 
 Substitua:
 - `@roomId`

@@ -1,0 +1,62 @@
+### ======================================================
+### STAGEFLOW - TESTES DE CADASTRO POR ROLE (/auth/signup/:role)
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@ownerToken = REPLACE_OWNER_TOKEN
+@adminToken = REPLACE_ADMIN_TOKEN
+@newAdminEmail = admin.by.owner.{{$timestamp}}@email.com
+@newOwnerEmail = owner.by.owner.{{$timestamp}}@email.com
+
+### ✅ OWNER cria ADMIN
+POST {{baseUrl}}/auth/signup/ADMIN
+Authorization: Bearer {{ownerToken}}
+Content-Type: application/json
+
+{
+  "name": "Admin Criado por Owner",
+  "email": "{{newAdminEmail}}",
+  "password": "senhaAdmin123"
+}
+
+### ✅ OWNER cria OWNER
+POST {{baseUrl}}/auth/signup/OWNER
+Authorization: Bearer {{ownerToken}}
+Content-Type: application/json
+
+{
+  "name": "Owner Criado por Owner",
+  "email": "{{newOwnerEmail}}",
+  "password": "senhaOwner123"
+}
+
+### ❌ ADMIN comum não pode criar por role (403)
+POST {{baseUrl}}/auth/signup/ADMIN
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Tentativa Sem Permissao",
+  "email": "forbidden.role@email.com",
+  "password": "senha123456"
+}
+
+### ❌ Role inválida (400)
+POST {{baseUrl}}/auth/signup/USER
+Authorization: Bearer {{ownerToken}}
+Content-Type: application/json
+
+{
+  "name": "Role Invalida",
+  "email": "role.invalida@email.com",
+  "password": "senha123456"
+}
+
+### ✅ Signin deve retornar role no payload.user
+POST {{baseUrl}}/auth/signin
+Content-Type: application/json
+
+{
+  "email": "{{newAdminEmail}}",
+  "password": "senhaAdmin123"
+}
