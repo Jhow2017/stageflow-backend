@@ -5,7 +5,9 @@
 @baseUrl = http://localhost:4000
 @email = jhowgama21@gmail.com
 @password = senha123
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjNlODUzMi01MmFhLTRkZjEtYTllNi1jMzU2NTczODNkMTkiLCJpYXQiOjE3NzQ5ODUxNzAsImV4cCI6MTc3NTU4OTk3MH0.2F9Y3iSVRYwE9pCdWwB96BoCCHteSnEqss5tRKd2mAI
+@ownerEmail = jhongama_jesus@hotmail.com
+@ownerPassword = Senha132
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjNlODUzMi01MmFhLTRkZjEtYTllNi1jMzU2NTczODNkMTkiLCJpYXQiOjE3NzQ5MjA4MTIsImV4cCI6MTc3NTUyNTYxMn0.i5GcY2aTGj0EIoYRWMQfQUmCXkBsvW_g_E28uSqmntI
 
 
 ### Pré-requisito
@@ -30,6 +32,16 @@ Content-Type: application/json
 {
   "email": "admin@email.com",
   "password": "senhaAdmin123"
+}
+
+### @name loginSuccessOwner
+### ✅ Login com credenciais válidas (owner)
+POST {{baseUrl}}/auth/signin
+Content-Type: application/json
+
+{
+  "email": "{{ownerEmail}}",
+  "password": "{{ownerPassword}}"
 }
 
 ### ❌ Sem email (erro de validação)

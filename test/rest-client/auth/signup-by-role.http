@@ -3,7 +3,7 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@ownerToken = REPLACE_OWNER_TOKEN
+@ownerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyZWFjNzc4My1iMTA1LTQwOGUtOGRmMC0zY2EzMmQ3N2RiNjAiLCJpYXQiOjE3NzQ5ODgwODMsImV4cCI6MTc3NTU5Mjg4M30.JCHxCUH8O80g5MNHmMt-FEsgVMMhPQWxUQqZIJR9xlg
 @adminToken = REPLACE_ADMIN_TOKEN
 @newAdminEmail = admin.by.owner.{{$timestamp}}@email.com
 @newOwnerEmail = owner.by.owner.{{$timestamp}}@email.com
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
   "name": "Admin Criado por Owner",
-  "email": "{{newAdminEmail}}",
+  "email": "jhowgama.admin@gmail.com",
   "password": "senhaAdmin123"
 }
 

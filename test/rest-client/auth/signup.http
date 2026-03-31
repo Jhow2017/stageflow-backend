@@ -3,7 +3,7 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@newUserEmail = teste.signup.{{$timestamp}}@email.com
+@newUserEmail = jhongama_jesus@hotmail.com
 
 ### Pré-requisito
 ### 1) Subir API: yarn start
