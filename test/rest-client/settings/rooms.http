@@ -3,8 +3,10 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjNlODUzMi01MmFhLTRkZjEtYTllNi1jMzU2NTczODNkMTkiLCJpYXQiOjE3NzQ5ODUxNzAsImV4cCI6MTc3NTU4OTk3MH0.2F9Y3iSVRYwE9pCdWwB96BoCCHteSnEqss5tRKd2mAI
-@studioId = e481b7d8-d016-45ee-99a4-6ddab4d65900
+@adminToken = REPLACE_STUDIO_ADMIN_TOKEN
+@ownerToken = REPLACE_OWNER_TOKEN
+@studioId = REPLACE_STUDIO_ID
+@otherStudioId = REPLACE_OTHER_STUDIO_ID
 
 ### ✅ Criar Sala A
 POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
@@ -80,5 +82,33 @@ Content-Type: application/json
   "description": "Teste de auth.",
   "pricePerHour": 50,
   "capacity": 2,
+  "features": ["Teste"]
+}
+
+### ❌ ADMIN de outro studio não pode operar (403)
+POST {{baseUrl}}/settings/studios/{{otherStudioId}}/rooms
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala sem permissão",
+  "type": "test",
+  "description": "Teste de acesso cruzado por tenant.",
+  "pricePerHour": 50,
+  "capacity": 2,
+  "features": ["Teste"]
+}
+
+### ✅ OWNER pode operar em qualquer studio (201/409 conforme limite do plano)
+POST {{baseUrl}}/settings/studios/{{studioId}}/rooms
+Authorization: Bearer {{ownerToken}}
+Content-Type: application/json
+
+{
+  "name": "Sala criada por owner",
+  "type": "owner-test",
+  "description": "Teste de permissão global do owner.",
+  "pricePerHour": 99,
+  "capacity": 4,
   "features": ["Teste"]
 }

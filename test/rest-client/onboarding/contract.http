@@ -4,6 +4,8 @@
 
 @baseUrl = http://localhost:4000
 @onboardingId = 33dada2f-ac85-44e1-b8d0-2d792b53d0ea
+@ownerToken = REPLACE_OWNER_TOKEN
+@studioAdminToken = REPLACE_STUDIO_ADMIN_TOKEN
 
 ### @name startOnboarding
 ### ✅ Iniciar onboarding (plano + dados + domínio + pagamento)
@@ -28,7 +30,9 @@ Content-Type: application/json
 GET {{baseUrl}}/onboarding/{{onboardingId}}
 
 ### ✅ Confirmar onboarding (simula confirmação da etapa financeira)
+### @name confirmOnboarding
 POST {{baseUrl}}/onboarding/{{onboardingId}}/confirm
+Authorization: Bearer {{ownerToken}}
 Content-Type: application/json
 
 {
@@ -36,8 +40,8 @@ Content-Type: application/json
 }
 
 ### ✅ Adicionar sala via Settings (respeita limite do plano)
-POST {{baseUrl}}/settings/studios/{{onboarding.response.body.onboarding.studioId}}/rooms
-Authorization: Bearer REPLACE_ADMIN_TOKEN
+POST {{baseUrl}}/settings/studios/{{confirmOnboarding.response.body.onboarding.studioId}}/rooms
+Authorization: Bearer {{studioAdminToken}}
 Content-Type: application/json
 
 {
@@ -47,6 +51,14 @@ Content-Type: application/json
   "pricePerHour": 80,
   "capacity": 6,
   "features": ["Bateria acústica", "PA 1000W"]
+}
+
+### ❌ Confirm sem token OWNER (deve retornar 401/403)
+POST {{baseUrl}}/onboarding/{{onboardingId}}/confirm
+Content-Type: application/json
+
+{
+  "paymentReference": "evt_payment_without_owner"
 }
 
 ### ❌ Subdomínio indisponível (deve retornar 409)

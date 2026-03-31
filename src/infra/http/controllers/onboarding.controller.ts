@@ -3,9 +3,13 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { ConfirmOnboardingUseCase } from '../../../domain/onboarding/application/use-cases/confirm-onboarding';
 import { GetOnboardingSessionUseCase } from '../../../domain/onboarding/application/use-cases/get-onboarding-session';
 import { StartOnboardingUseCase } from '../../../domain/onboarding/application/use-cases/start-onboarding';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { OwnerGuard } from '../../auth/owner.guard';
 import { Public } from '../../auth/public';
 import { ConfirmOnboardingDto } from '../dtos/confirm-onboarding.dto';
 import { StartOnboardingDto } from '../dtos/start-onboarding.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UseGuards } from '@nestjs/common';
 
 @ApiTags('Onboarding')
 @Controller('/onboarding')
@@ -42,12 +46,15 @@ export class OnboardingController {
     }
 
     @Post('/:onboardingId/confirm')
-    @Public()
+    @UseGuards(JwtAuthGuard, OwnerGuard)
+    @ApiBearerAuth()
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Confirmar onboarding após etapa de pagamento' })
     @ApiParam({ name: 'onboardingId' })
     @ApiBody({ type: ConfirmOnboardingDto, required: false })
     @ApiResponse({ status: 200, description: 'Onboarding confirmado e studio provisionado' })
+    @ApiResponse({ status: 401, description: 'Não autenticado' })
+    @ApiResponse({ status: 403, description: 'Acesso negado (somente OWNER)' })
     @ApiResponse({ status: 400, description: 'Status inválido para confirmação' })
     @ApiResponse({ status: 404, description: 'Onboarding não encontrado' })
     async confirm(

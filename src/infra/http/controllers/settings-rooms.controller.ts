@@ -21,6 +21,7 @@ export class SettingsRoomsController {
     @ApiOperation({ summary: 'Adicionar sala do studio respeitando limite do plano' })
     @ApiParam({ name: 'studioId', example: 'uuid-do-studio' })
     @ApiResponse({ status: 201, description: 'Sala criada com sucesso' })
+    @ApiResponse({ status: 403, description: 'Acesso negado para este studio' })
     @ApiResponse({ status: 404, description: 'Studio não encontrado' })
     @ApiResponse({ status: 409, description: 'Limite de salas do plano atingido' })
     async create(
