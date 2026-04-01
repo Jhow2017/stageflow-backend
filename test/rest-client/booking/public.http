@@ -12,6 +12,9 @@ GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms
 ### ✅ Listar horários disponíveis por data
 GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms/{{roomId}}/availability?year=2026&month=4&day=1
 
+### ✅ Listar horários disponíveis por intervalo de datas (objeto por data)
+GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms/{{roomId}}/availability/range?startDate=2026-04-01&endDate=2026-04-07
+
 ### ❌ Data passada não permitida
 GET {{baseUrl}}/public/studios/{{studioSlug}}/rooms/{{roomId}}/availability?year=2026&month=3&day=29
 

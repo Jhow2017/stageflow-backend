@@ -35,6 +35,7 @@ import { ListStudioClientsController } from './controllers/list-studio-clients.c
 import { ListGlobalStudiosController } from './controllers/list-global-studios.controller';
 import { ListPublicRoomsUseCase } from '../../domain/booking/application/use-cases/list-public-rooms';
 import { ListAvailableSlotsByDateUseCase } from '../../domain/booking/application/use-cases/list-available-slots-by-date';
+import { ListAvailableSlotsByRangeUseCase } from '../../domain/booking/application/use-cases/list-available-slots-by-range';
 import { CreatePublicBookingUseCase } from '../../domain/booking/application/use-cases/create-public-booking';
 import { ListStudioBookingsUseCase } from '../../domain/booking/application/use-cases/list-studio-bookings';
 import { ListStudioClientsUseCase } from '../../domain/booking/application/use-cases/list-studio-clients';
@@ -89,6 +90,7 @@ import { StudioSubscriptionProvisioningService } from '../subscription-checkout/
         ListAuditLogsUseCase,
         ListPublicRoomsUseCase,
         ListAvailableSlotsByDateUseCase,
+        ListAvailableSlotsByRangeUseCase,
         CreatePublicBookingUseCase,
         CreateStudioRoomFromSettingsUseCase,
         ListStudioBookingsUseCase,
