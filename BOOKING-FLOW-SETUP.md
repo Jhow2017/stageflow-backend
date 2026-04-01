@@ -16,6 +16,14 @@
   - `POST /subscription-checkout/start`
   - `GET /subscription-checkout/:checkoutId`
   - `POST /subscription-checkout/:checkoutId/approve` (V1 manual por OWNER)
+- Endpoints da area do cliente (MVP):
+  - `GET /studio/:studioSlug/client-area/profile`
+  - `PATCH /studio/:studioSlug/client-area/profile`
+  - `GET /studio/:studioSlug/client-area/bookings`
+  - `GET /studio/:studioSlug/client-area/receipts` (placeholder V1)
+  - `POST /studio/:studioSlug/client-area/banner`
+  - `DELETE /studio/:studioSlug/client-area/account`
+  - `POST /studio/:studioSlug/client-area/logout`
 
 ## 2) Regras implementadas
 
@@ -42,6 +50,7 @@ Se preferir, ainda é possível usar seed manual por SQL.
 - `test/rest-client/subscription-checkout/contract.http`
 - `test/rest-client/booking/public.http`
 - `test/rest-client/admin/studios.http`
+- `test/rest-client/client-area/mvp.http`
 
 Substitua:
 - `@roomId`

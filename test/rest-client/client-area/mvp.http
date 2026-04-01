@@ -1,0 +1,55 @@
+### ===============================================
+### STAGEFLOW - CLIENT AREA MVP
+### ===============================================
+@baseUrl = http://localhost:4000
+@studioSlug = super-sonic
+@clientToken = REPLACE_WITH_CLIENT_JWT
+@otherUserToken = REPLACE_WITH_NON_LINKED_USER_JWT
+
+### @name getProfileSuccess
+GET {{baseUrl}}/studio/{{studioSlug}}/client-area/profile
+Authorization: Bearer {{clientToken}}
+
+### @name updateProfileSuccess
+PATCH {{baseUrl}}/studio/{{studioSlug}}/client-area/profile
+Authorization: Bearer {{clientToken}}
+Content-Type: application/json
+
+{
+  "name": "Banda Super Sonic",
+  "email": "integrantes@supersonic.com",
+  "phone": "11999998888",
+  "notes": "Prefere ensaio noturno"
+}
+
+### @name listBookingsSuccess
+GET {{baseUrl}}/studio/{{studioSlug}}/client-area/bookings
+Authorization: Bearer {{clientToken}}
+
+### @name listReceiptsSuccess
+GET {{baseUrl}}/studio/{{studioSlug}}/client-area/receipts
+Authorization: Bearer {{clientToken}}
+
+### @name updateBannerSuccess
+POST {{baseUrl}}/studio/{{studioSlug}}/client-area/banner
+Authorization: Bearer {{clientToken}}
+Content-Type: application/json
+
+{
+  "bannerUrl": "https://cdn.stageflow.app/banners/super-sonic.jpg"
+}
+
+### @name logoutSuccess
+POST {{baseUrl}}/studio/{{studioSlug}}/client-area/logout
+Authorization: Bearer {{clientToken}}
+
+### @name getProfileUnauthorized
+GET {{baseUrl}}/studio/{{studioSlug}}/client-area/profile
+
+### @name getProfileForbidden
+GET {{baseUrl}}/studio/{{studioSlug}}/client-area/profile
+Authorization: Bearer {{otherUserToken}}
+
+### @name deleteAccountSuccess
+DELETE {{baseUrl}}/studio/{{studioSlug}}/client-area/account
+Authorization: Bearer {{clientToken}}

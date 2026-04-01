@@ -13,6 +13,7 @@ export class PrismaClientMapper {
                 name: raw.name,
                 email: raw.email,
                 phone: raw.phone,
+                bannerUrl: raw.bannerUrl,
                 notes: raw.notes,
             },
             new UniqueEntityID(raw.id),

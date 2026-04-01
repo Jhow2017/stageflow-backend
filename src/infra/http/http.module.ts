@@ -54,6 +54,15 @@ import { SubdomainAvailabilityChecker } from '../../domain/subscription-checkout
 import { StudioSubdomainAvailabilityChecker } from '../subscription-checkout/studio-subdomain-availability-checker';
 import { SubscriptionProvisioningService } from '../../domain/subscription-checkout/application/services/subscription-provisioning-service';
 import { StudioSubscriptionProvisioningService } from '../subscription-checkout/studio-subscription-provisioning.service';
+import { ClientAreaController } from './controllers/client-area.controller';
+import { ClientAreaScopeGuard } from '../auth/client-area-scope.guard';
+import { GetClientAreaProfileUseCase } from '../../domain/booking/application/use-cases/get-client-area-profile';
+import { UpdateClientAreaProfileUseCase } from '../../domain/booking/application/use-cases/update-client-area-profile';
+import { ListClientAreaBookingsUseCase } from '../../domain/booking/application/use-cases/list-client-area-bookings';
+import { ListClientAreaReceiptsUseCase } from '../../domain/booking/application/use-cases/list-client-area-receipts';
+import { UpdateClientAreaBannerUseCase } from '../../domain/booking/application/use-cases/update-client-area-banner';
+import { DeleteClientAreaAccountUseCase } from '../../domain/booking/application/use-cases/delete-client-area-account';
+import { LogoutClientAreaUseCase } from '../../domain/auth/application/use-cases/logout-client-area';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
@@ -77,6 +86,7 @@ import { StudioSubscriptionProvisioningService } from '../subscription-checkout/
         ListGlobalStudiosController,
         SubscriptionCheckoutController,
         SettingsRoomsController,
+        ClientAreaController,
     ],
     providers: [
         RegisterUserUseCase,
@@ -100,6 +110,13 @@ import { StudioSubscriptionProvisioningService } from '../subscription-checkout/
         StartSubscriptionCheckoutUseCase,
         GetSubscriptionCheckoutUseCase,
         ApproveSubscriptionCheckoutUseCase,
+        GetClientAreaProfileUseCase,
+        UpdateClientAreaProfileUseCase,
+        ListClientAreaBookingsUseCase,
+        ListClientAreaReceiptsUseCase,
+        UpdateClientAreaBannerUseCase,
+        DeleteClientAreaAccountUseCase,
+        LogoutClientAreaUseCase,
         {
             provide: SubscriptionCheckoutSessionsRepository,
             useClass: PrismaSubscriptionCheckoutSessionsRepository,
@@ -121,6 +138,7 @@ import { StudioSubscriptionProvisioningService } from '../subscription-checkout/
             useClass: JwtAuthGuard,
         },
         OwnerGuard,
+        ClientAreaScopeGuard,
     ],
 })
 export class HttpModule { }

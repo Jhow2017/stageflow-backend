@@ -25,12 +25,14 @@ export class PrismaClientsRepository implements ClientsRepository {
                 name: data.name,
                 email: data.email,
                 phone: data.phone,
+                bannerUrl: data.bannerUrl ?? null,
                 notes: data.notes ?? null,
             },
             update: {
                 userId: data.userId ?? undefined,
                 name: data.name,
                 phone: data.phone,
+                bannerUrl: data.bannerUrl ?? null,
                 notes: data.notes ?? null,
             },
         });
@@ -45,5 +47,33 @@ export class PrismaClientsRepository implements ClientsRepository {
         });
 
         return clients.map(PrismaClientMapper.toDomain);
+    }
+
+    async findByStudioAndUserId(studioId: string, userId: string): Promise<Client | null> {
+        const client = await this.prisma.client.findFirst({
+            where: { studioId, userId },
+        });
+
+        if (!client) return null;
+        return PrismaClientMapper.toDomain(client);
+    }
+
+    async save(client: Client): Promise<void> {
+        await this.prisma.client.update({
+            where: { id: client.id.toString() },
+            data: {
+                name: client.name,
+                email: client.email,
+                phone: client.phone,
+                bannerUrl: client.bannerUrl,
+                notes: client.notes,
+            },
+        });
+    }
+
+    async deleteById(clientId: string): Promise<void> {
+        await this.prisma.client.delete({
+            where: { id: clientId },
+        });
     }
 }

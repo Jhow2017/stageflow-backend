@@ -59,4 +59,13 @@ export class PrismaBookingsRepository implements BookingsRepository {
 
         return bookings.map(PrismaBookingMapper.toDomain);
     }
+
+    async findByStudioIdAndClientId(studioId: string, clientId: string): Promise<Booking[]> {
+        const bookings = await this.prisma.booking.findMany({
+            where: { studioId, clientId },
+            orderBy: [{ bookingDate: 'desc' }, { startHour: 'desc' }],
+        });
+
+        return bookings.map(PrismaBookingMapper.toDomain);
+    }
 }

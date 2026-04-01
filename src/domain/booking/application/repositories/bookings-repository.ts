@@ -11,4 +11,5 @@ export abstract class BookingsRepository {
     abstract create(booking: Booking): Promise<void>;
     abstract hasConflict(params: FindConflictRequest): Promise<boolean>;
     abstract findByStudioId(studioId: string): Promise<Booking[]>;
+    abstract findByStudioIdAndClientId(studioId: string, clientId: string): Promise<Booking[]>;
 }

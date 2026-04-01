@@ -90,6 +90,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.FORBIDDEN;
         }
 
+        if (exception.constructor.name === 'ClientAreaAccessDeniedError') {
+            return HttpStatus.FORBIDDEN;
+        }
+
         if (exception.constructor.name === 'UserAlreadyExistsError') {
             return HttpStatus.CONFLICT;
         }
