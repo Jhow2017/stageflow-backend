@@ -6,6 +6,7 @@
 @checkoutId = REPLACE_CHECKOUT_ID
 @ownerToken = REPLACE_OWNER_TOKEN
 @subscriberToken = REPLACE_SUBSCRIBER_TOKEN
+@stripeSignature = REPLACE_STRIPE_SIGNATURE
 
 ### @name startCheckout
 ### ✅ Iniciar checkout (plano + domínio + pagamento) - requer auth
@@ -26,6 +27,30 @@ Content-Type: application/json
 ### ✅ Consultar status de checkout
 GET {{baseUrl}}/subscription-checkout/{{checkoutId}}
 Authorization: Bearer {{subscriberToken}}
+
+### ✅ Criar sessão Stripe Embedded Checkout
+POST {{baseUrl}}/subscription-checkout/{{checkoutId}}/stripe/session
+Authorization: Bearer {{subscriberToken}}
+
+### ✅ Webhook Stripe (payload assinado)
+POST {{baseUrl}}/payments/stripe/webhook
+stripe-signature: {{stripeSignature}}
+Content-Type: application/json
+
+{
+  "id": "evt_test_webhook",
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "object": "checkout.session",
+      "id": "cs_test_123",
+      "client_reference_id": "{{checkoutId}}",
+      "metadata": {
+        "checkoutId": "{{checkoutId}}"
+      }
+    }
+  }
+}
 
 ### ✅ Aprovar checkout (V1 manual por OWNER)
 ### @name approveCheckout
@@ -72,4 +97,12 @@ Content-Type: application/json
   "subdomain": "rock-valley",
   "paymentMethod": "PIX",
   "totalAmount": 80
+}
+
+### ❌ Webhook sem assinatura (deve retornar 400)
+POST {{baseUrl}}/payments/stripe/webhook
+Content-Type: application/json
+
+{
+  "id": "evt_test_missing_signature"
 }

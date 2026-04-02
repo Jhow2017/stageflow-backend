@@ -63,6 +63,16 @@ import { ListClientAreaReceiptsUseCase } from '../../domain/booking/application/
 import { UpdateClientAreaBannerUseCase } from '../../domain/booking/application/use-cases/update-client-area-banner';
 import { DeleteClientAreaAccountUseCase } from '../../domain/booking/application/use-cases/delete-client-area-account';
 import { LogoutClientAreaUseCase } from '../../domain/auth/application/use-cases/logout-client-area';
+import { StripeWebhookController } from './controllers/stripe-webhook.controller';
+import { CreateSubscriptionCheckoutStripeSessionUseCase } from '../../domain/subscription-checkout/application/use-cases/create-subscription-checkout-stripe-session';
+import { HandleStripeSubscriptionWebhookUseCase } from '../../domain/subscription-checkout/application/use-cases/handle-stripe-subscription-webhook';
+import { StripeSubscriptionGateway } from '../../domain/subscription-checkout/application/services/stripe-subscription-gateway';
+import { StripeSubscriptionGatewayService } from '../subscription-checkout/stripe-subscription-gateway.service';
+import { StripeWebhookEventsRepository } from '../../domain/subscription-checkout/application/repositories/stripe-webhook-events-repository';
+import { PrismaStripeWebhookEventsRepository } from '../database/prisma/repositories/prisma-stripe-webhook-events-repository';
+import { BookingPaymentGateway } from '../../domain/booking/application/services/booking-payment-gateway';
+import { StripeBookingPaymentGatewayService } from '../booking/stripe-booking-payment-gateway.service';
+import { CreateBookingPaymentIntentUseCase } from '../../domain/booking/application/use-cases/create-booking-payment-intent';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
@@ -87,6 +97,7 @@ import { LogoutClientAreaUseCase } from '../../domain/auth/application/use-cases
         SubscriptionCheckoutController,
         SettingsRoomsController,
         ClientAreaController,
+        StripeWebhookController,
     ],
     providers: [
         RegisterUserUseCase,
@@ -117,13 +128,28 @@ import { LogoutClientAreaUseCase } from '../../domain/auth/application/use-cases
         UpdateClientAreaBannerUseCase,
         DeleteClientAreaAccountUseCase,
         LogoutClientAreaUseCase,
+        CreateSubscriptionCheckoutStripeSessionUseCase,
+        HandleStripeSubscriptionWebhookUseCase,
+        CreateBookingPaymentIntentUseCase,
         {
             provide: SubscriptionCheckoutSessionsRepository,
             useClass: PrismaSubscriptionCheckoutSessionsRepository,
         },
         {
+            provide: StripeWebhookEventsRepository,
+            useClass: PrismaStripeWebhookEventsRepository,
+        },
+        {
             provide: SubdomainAvailabilityChecker,
             useClass: StudioSubdomainAvailabilityChecker,
+        },
+        {
+            provide: StripeSubscriptionGateway,
+            useClass: StripeSubscriptionGatewayService,
+        },
+        {
+            provide: BookingPaymentGateway,
+            useClass: StripeBookingPaymentGatewayService,
         },
         {
             provide: SubscriptionProvisioningService,

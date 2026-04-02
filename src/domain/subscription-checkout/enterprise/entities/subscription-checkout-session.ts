@@ -22,6 +22,9 @@ export interface SubscriptionCheckoutSessionProps {
     studioId: string | null;
     subscriberUserId: string | null;
     paymentReference: string | null;
+    stripeCheckoutSessionId: string | null;
+    stripeCustomerId: string | null;
+    stripeSubscriptionId: string | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -41,6 +44,9 @@ export class SubscriptionCheckoutSession extends Entity<SubscriptionCheckoutSess
     get studioId(): string | null { return this.props.studioId; }
     get subscriberUserId(): string | null { return this.props.subscriberUserId; }
     get paymentReference(): string | null { return this.props.paymentReference; }
+    get stripeCheckoutSessionId(): string | null { return this.props.stripeCheckoutSessionId; }
+    get stripeCustomerId(): string | null { return this.props.stripeCustomerId; }
+    get stripeSubscriptionId(): string | null { return this.props.stripeSubscriptionId; }
     get createdAt(): Date { return this.props.createdAt; }
     get updatedAt(): Date { return this.props.updatedAt; }
 
@@ -49,6 +55,29 @@ export class SubscriptionCheckoutSession extends Entity<SubscriptionCheckoutSess
         this.props.subscriberUserId = subscriberUserId;
         this.props.paymentReference = paymentReference ?? null;
         this.props.status = 'APPROVED';
+        this.props.updatedAt = new Date();
+    }
+
+    reject(paymentReference?: string): void {
+        this.props.status = 'REJECTED';
+        this.props.paymentReference = paymentReference ?? this.props.paymentReference;
+        this.props.updatedAt = new Date();
+    }
+
+    expire(paymentReference?: string): void {
+        this.props.status = 'EXPIRED';
+        this.props.paymentReference = paymentReference ?? this.props.paymentReference;
+        this.props.updatedAt = new Date();
+    }
+
+    bindStripeCheckoutSession(checkoutSessionId: string, customerId?: string | null): void {
+        this.props.stripeCheckoutSessionId = checkoutSessionId;
+        this.props.stripeCustomerId = customerId ?? this.props.stripeCustomerId;
+        this.props.updatedAt = new Date();
+    }
+
+    bindStripeSubscription(subscriptionId: string): void {
+        this.props.stripeSubscriptionId = subscriptionId;
         this.props.updatedAt = new Date();
     }
 
@@ -63,6 +92,9 @@ export class SubscriptionCheckoutSession extends Entity<SubscriptionCheckoutSess
             {
                 ...props,
                 paymentReference: props.paymentReference ?? null,
+                stripeCheckoutSessionId: props.stripeCheckoutSessionId ?? null,
+                stripeCustomerId: props.stripeCustomerId ?? null,
+                stripeSubscriptionId: props.stripeSubscriptionId ?? null,
                 createdAt: props.createdAt ?? new Date(),
                 updatedAt: props.updatedAt ?? new Date(),
             },

@@ -114,6 +114,9 @@ export class StartSubscriptionCheckoutUseCase {
             studioId: null,
             subscriberUserId: data.subscriberUserId,
             paymentReference: null,
+            stripeCheckoutSessionId: null,
+            stripeCustomerId: null,
+            stripeSubscriptionId: null,
         });
 
         await this.subscriptionCheckoutSessionsRepository.create(session);

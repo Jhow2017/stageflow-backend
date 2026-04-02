@@ -189,10 +189,27 @@ model SubscriptionCheckout {
     studioId    String?
     subscriberUserId String?
     paymentReference String?
+    stripeCheckoutSessionId String?
+    stripeCustomerId String?
+    stripeSubscriptionId String?
     createdAt   DateTime                   @default(now())
     updatedAt   DateTime                   @updatedAt
 
     @@index([status])
     @@index([ownerEmail])
+    @@index([stripeCheckoutSessionId])
+    @@index([stripeSubscriptionId])
     @@map("subscription_checkouts")
+}
+
+model StripeWebhookEvent {
+    id          String   @id @default(uuid())
+    provider    String
+    eventId     String   @unique
+    eventType   String
+    payload     Json?
+    processedAt DateTime @default(now())
+
+    @@index([provider])
+    @@map("stripe_webhook_events")
 }

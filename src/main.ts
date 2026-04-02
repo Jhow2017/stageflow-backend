@@ -5,7 +5,7 @@ import { AppModule } from './infra/app.module';
 import { HttpExceptionFilter } from './infra/http/filters/http-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   // Configuração CORS para permitir requisições do frontend
   app.enableCors({

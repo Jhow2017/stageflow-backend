@@ -17,6 +17,15 @@ export class PrismaBookingsRepository implements BookingsRepository {
         await this.prisma.booking.create({ data });
     }
 
+    async findById(id: string): Promise<Booking | null> {
+        const booking = await this.prisma.booking.findUnique({
+            where: { id },
+        });
+
+        if (!booking) return null;
+        return PrismaBookingMapper.toDomain(booking);
+    }
+
     async hasConflict({
         roomId,
         bookingDate,
