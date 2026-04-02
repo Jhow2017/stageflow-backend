@@ -9,6 +9,7 @@ export interface FindConflictRequest {
 
 export abstract class BookingsRepository {
     abstract create(booking: Booking): Promise<void>;
+    abstract save(booking: Booking): Promise<void>;
     abstract hasConflict(params: FindConflictRequest): Promise<boolean>;
     abstract findById(id: string): Promise<Booking | null>;
     abstract findByStudioId(studioId: string): Promise<Booking[]>;

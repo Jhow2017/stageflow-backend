@@ -31,9 +31,13 @@ export class StripeWebhookController {
             throw new BadRequestException('Stripe signature is required');
         }
         const payload = req.rawBody ?? JSON.stringify(req.body);
-        return this.handleStripeSubscriptionWebhookUseCase.execute({
-            payload,
-            signature: stripeSignature,
-        });
+        try {
+            return await this.handleStripeSubscriptionWebhookUseCase.execute({
+                payload,
+                signature: stripeSignature,
+            });
+        } catch {
+            throw new BadRequestException('Invalid Stripe webhook signature or payload');
+        }
     }
 }

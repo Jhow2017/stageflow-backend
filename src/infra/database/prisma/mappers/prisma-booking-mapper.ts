@@ -37,7 +37,7 @@ export class PrismaBookingMapper {
             status: booking.status,
             paymentMethod: booking.paymentMethod,
             paymentStatus: booking.paymentStatus,
-            paymentRef: null,
+            paymentRef: booking.paymentRef,
             createdAt: booking.createdAt,
         };
     }

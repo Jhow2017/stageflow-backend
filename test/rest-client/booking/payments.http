@@ -1,0 +1,48 @@
+### ===============================================
+### STAGEFLOW - BOOKING PAYMENT (CONNECT)
+### ===============================================
+@baseUrl = http://localhost:4000
+@studioSlug = REPLACE_STUDIO_SLUG
+@bookingId = REPLACE_BOOKING_ID
+@stripeSignature = REPLACE_STRIPE_SIGNATURE
+
+### @name createPaymentIntent
+POST {{baseUrl}}/public/studios/{{studioSlug}}/bookings/{{bookingId}}/payment-intent
+
+### @name webhookPaymentSucceeded
+POST {{baseUrl}}/payments/stripe/webhook
+stripe-signature: {{stripeSignature}}
+Content-Type: application/json
+
+{
+  "id": "evt_test_pi_success",
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "object": "payment_intent",
+      "id": "pi_test_123",
+      "metadata": {
+        "bookingId": "{{bookingId}}"
+      }
+    }
+  }
+}
+
+### @name webhookPaymentFailed
+POST {{baseUrl}}/payments/stripe/webhook
+stripe-signature: {{stripeSignature}}
+Content-Type: application/json
+
+{
+  "id": "evt_test_pi_failed",
+  "type": "payment_intent.payment_failed",
+  "data": {
+    "object": {
+      "object": "payment_intent",
+      "id": "pi_test_456",
+      "metadata": {
+        "bookingId": "{{bookingId}}"
+      }
+    }
+  }
+}

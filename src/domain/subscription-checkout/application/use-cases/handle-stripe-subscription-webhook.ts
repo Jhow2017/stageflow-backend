@@ -3,6 +3,8 @@ import { ApproveSubscriptionCheckoutUseCase } from './approve-subscription-check
 import { StripeSubscriptionGateway } from '../services/stripe-subscription-gateway';
 import { SubscriptionCheckoutSessionsRepository } from '../repositories/subscription-checkout-sessions-repository';
 import { StripeWebhookEventsRepository } from '../repositories/stripe-webhook-events-repository';
+import { StudiosRepository } from '../../../booking/application/repositories/studios-repository';
+import { BookingsRepository } from '../../../booking/application/repositories/bookings-repository';
 
 export interface HandleStripeSubscriptionWebhookRequest {
     payload: Buffer | string;
@@ -26,6 +28,10 @@ export class HandleStripeSubscriptionWebhookUseCase {
         private stripeWebhookEventsRepository: StripeWebhookEventsRepository,
         @Inject(SubscriptionCheckoutSessionsRepository)
         private checkoutSessionsRepository: SubscriptionCheckoutSessionsRepository,
+        @Inject(StudiosRepository)
+        private studiosRepository: StudiosRepository,
+        @Inject(BookingsRepository)
+        private bookingsRepository: BookingsRepository,
         private approveSubscriptionCheckoutUseCase: ApproveSubscriptionCheckoutUseCase,
     ) { }
 
@@ -102,6 +108,88 @@ export class HandleStripeSubscriptionWebhookUseCase {
                         checkout.expire(event.id);
                         await this.checkoutSessionsRepository.save(checkout);
                     }
+                }
+            }
+        }
+
+        if (event.type === 'account.updated' && objectType === 'account') {
+            const accountId = getStringField(object.id);
+            if (accountId) {
+                const studio = await this.studiosRepository.findByStripeConnectedAccountId(accountId);
+                if (studio) {
+                    const requirements = (object.requirements as Record<string, unknown> | undefined) ?? {};
+                    const currentlyDueRaw = requirements.currently_due;
+                    const eventuallyDueRaw = requirements.eventually_due;
+                    const currentlyDue = Array.isArray(currentlyDueRaw)
+                        ? currentlyDueRaw.filter((i): i is string => typeof i === 'string')
+                        : [];
+                    const eventuallyDue = Array.isArray(eventuallyDueRaw)
+                        ? eventuallyDueRaw.filter((i): i is string => typeof i === 'string')
+                        : [];
+
+                    const chargesEnabled = !!object.charges_enabled;
+                    const payoutsEnabled = !!object.payouts_enabled;
+                    const detailsSubmitted = !!object.details_submitted;
+                    const connectStatus = chargesEnabled && payoutsEnabled
+                        ? 'ACTIVE'
+                        : currentlyDue.length > 0
+                            ? 'RESTRICTED'
+                            : 'PENDING';
+
+                    studio.updateStripeCapabilities({
+                        onboardingComplete: chargesEnabled && payoutsEnabled,
+                        chargesEnabled,
+                        payoutsEnabled,
+                        detailsSubmitted,
+                        requirementsCurrentlyDue: currentlyDue,
+                        requirementsEventuallyDue: eventuallyDue,
+                        connectStatus,
+                    });
+
+                    await this.studiosRepository.update({
+                        id: studio.id.toString(),
+                        ownerUserId: studio.ownerUserId,
+                        stripeConnectedAccountId: studio.stripeConnectedAccountId,
+                        stripeOnboardingComplete: studio.stripeOnboardingComplete,
+                        stripeChargesEnabled: studio.stripeChargesEnabled,
+                        stripePayoutsEnabled: studio.stripePayoutsEnabled,
+                        stripeDetailsSubmitted: studio.stripeDetailsSubmitted,
+                        stripeRequirementsCurrentlyDue: studio.stripeRequirementsCurrentlyDue,
+                        stripeRequirementsEventuallyDue: studio.stripeRequirementsEventuallyDue,
+                        stripeConnectStatus: studio.stripeConnectStatus,
+                        name: studio.name,
+                        slug: studio.slug,
+                        planTier: studio.planTier,
+                        logoUrl: studio.logoUrl,
+                        primaryColor: studio.primaryColor,
+                        openHour: studio.openHour,
+                        closeHour: studio.closeHour,
+                        timezone: studio.timezone,
+                    });
+                }
+            }
+        }
+
+        if (event.type === 'payment_intent.succeeded' && objectType === 'payment_intent') {
+            const metadata = (object.metadata as Record<string, unknown> | undefined) ?? {};
+            const bookingId = getStringField(metadata.bookingId);
+            if (bookingId) {
+                const booking = await this.bookingsRepository.findById(bookingId);
+                if (booking) {
+                    booking.markAsPaid(getStringField(object.id) ?? event.id);
+                    await this.bookingsRepository.save(booking);
+                }
+            }
+        }
+
+        if (event.type === 'payment_intent.payment_failed' && objectType === 'payment_intent') {
+            const metadata = (object.metadata as Record<string, unknown> | undefined) ?? {};
+            const bookingId = getStringField(metadata.bookingId);
+            if (bookingId) {
+                const booking = await this.bookingsRepository.findById(bookingId);
+                if (booking) {
+                    booking.markAsFailed(getStringField(object.id) ?? event.id);
+                    await this.bookingsRepository.save(booking);
                 }
             }
         }

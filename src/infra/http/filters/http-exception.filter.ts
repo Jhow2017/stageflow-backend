@@ -70,6 +70,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.NOT_FOUND;
         }
 
+        if (exception.constructor.name === 'BookingNotFoundForPaymentError') {
+            return HttpStatus.NOT_FOUND;
+        }
+
         if (exception.constructor.name === 'OnboardingSessionNotFoundError') {
             return HttpStatus.NOT_FOUND;
         }
@@ -88,6 +92,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         if (exception.constructor.name === 'StudioAccessDeniedError') {
             return HttpStatus.FORBIDDEN;
+        }
+
+        if (exception.constructor.name === 'StudioStripeAccountNotConnectedError') {
+            return HttpStatus.BAD_REQUEST;
         }
 
         if (exception.constructor.name === 'ClientAreaAccessDeniedError') {

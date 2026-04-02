@@ -73,6 +73,13 @@ import { PrismaStripeWebhookEventsRepository } from '../database/prisma/reposito
 import { BookingPaymentGateway } from '../../domain/booking/application/services/booking-payment-gateway';
 import { StripeBookingPaymentGatewayService } from '../booking/stripe-booking-payment-gateway.service';
 import { CreateBookingPaymentIntentUseCase } from '../../domain/booking/application/use-cases/create-booking-payment-intent';
+import { StripeConnectGateway } from '../../domain/booking/application/services/stripe-connect-gateway';
+import { StripeConnectGatewayService } from '../booking/stripe-connect-gateway.service';
+import { FinanceStripeController } from './controllers/finance-stripe.controller';
+import { CreateStudioStripeConnectOnboardingLinkUseCase } from '../../domain/booking/application/use-cases/create-studio-stripe-connect-onboarding-link';
+import { GetStudioStripeConnectStatusUseCase } from '../../domain/booking/application/use-cases/get-studio-stripe-connect-status';
+import { CreateStudioStripeDashboardLinkUseCase } from '../../domain/booking/application/use-cases/create-studio-stripe-dashboard-link';
+import { CreateBookingPaymentIntentController } from './controllers/create-booking-payment-intent.controller';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
@@ -98,6 +105,8 @@ import { CreateBookingPaymentIntentUseCase } from '../../domain/booking/applicat
         SettingsRoomsController,
         ClientAreaController,
         StripeWebhookController,
+        FinanceStripeController,
+        CreateBookingPaymentIntentController,
     ],
     providers: [
         RegisterUserUseCase,
@@ -131,6 +140,9 @@ import { CreateBookingPaymentIntentUseCase } from '../../domain/booking/applicat
         CreateSubscriptionCheckoutStripeSessionUseCase,
         HandleStripeSubscriptionWebhookUseCase,
         CreateBookingPaymentIntentUseCase,
+        CreateStudioStripeConnectOnboardingLinkUseCase,
+        GetStudioStripeConnectStatusUseCase,
+        CreateStudioStripeDashboardLinkUseCase,
         {
             provide: SubscriptionCheckoutSessionsRepository,
             useClass: PrismaSubscriptionCheckoutSessionsRepository,
@@ -150,6 +162,10 @@ import { CreateBookingPaymentIntentUseCase } from '../../domain/booking/applicat
         {
             provide: BookingPaymentGateway,
             useClass: StripeBookingPaymentGatewayService,
+        },
+        {
+            provide: StripeConnectGateway,
+            useClass: StripeConnectGatewayService,
         },
         {
             provide: SubscriptionProvisioningService,

@@ -33,6 +33,14 @@ model User {
 model Studio {
     id         String    @id @default(uuid())
     ownerUserId String?
+    stripeConnectedAccountId String?
+    stripeOnboardingComplete Boolean   @default(false)
+    stripeChargesEnabled Boolean       @default(false)
+    stripePayoutsEnabled Boolean       @default(false)
+    stripeDetailsSubmitted Boolean     @default(false)
+    stripeRequirementsCurrentlyDue Json?
+    stripeRequirementsEventuallyDue Json?
+    stripeConnectStatus String?
     name       String
     slug       String    @unique
     planTier   PlanTier  @default(STARTER)
@@ -49,6 +57,7 @@ model Studio {
     owner      User?     @relation("StudioOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
 
     @@index([ownerUserId])
+    @@index([stripeConnectStatus])
     @@map("studios")
 }
 

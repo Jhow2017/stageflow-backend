@@ -9,6 +9,18 @@ export class PrismaStudioMapper {
         return Studio.create(
             {
                 ownerUserId: raw.ownerUserId,
+                stripeConnectedAccountId: raw.stripeConnectedAccountId,
+                stripeOnboardingComplete: raw.stripeOnboardingComplete,
+                stripeChargesEnabled: raw.stripeChargesEnabled,
+                stripePayoutsEnabled: raw.stripePayoutsEnabled,
+                stripeDetailsSubmitted: raw.stripeDetailsSubmitted,
+                stripeRequirementsCurrentlyDue: Array.isArray(raw.stripeRequirementsCurrentlyDue)
+                    ? (raw.stripeRequirementsCurrentlyDue as string[])
+                    : null,
+                stripeRequirementsEventuallyDue: Array.isArray(raw.stripeRequirementsEventuallyDue)
+                    ? (raw.stripeRequirementsEventuallyDue as string[])
+                    : null,
+                stripeConnectStatus: raw.stripeConnectStatus,
                 name: raw.name,
                 slug: raw.slug,
                 planTier: raw.planTier,

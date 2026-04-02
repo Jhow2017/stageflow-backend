@@ -1,0 +1,21 @@
+### ===============================================
+### STAGEFLOW - FINANCEIRO STRIPE CONNECT (MVP)
+### ===============================================
+@baseUrl = http://localhost:4000
+@studioId = REPLACE_STUDIO_ID
+@subscriberToken = REPLACE_SUBSCRIBER_TOKEN
+
+### @name createConnectLink
+POST {{baseUrl}}/financeiro/studios/{{studioId}}/stripe/connect
+Authorization: Bearer {{subscriberToken}}
+
+### @name getConnectStatus
+GET {{baseUrl}}/financeiro/studios/{{studioId}}/stripe/status?refresh=true
+Authorization: Bearer {{subscriberToken}}
+
+### @name createDashboardLink
+POST {{baseUrl}}/financeiro/studios/{{studioId}}/stripe/dashboard-link
+Authorization: Bearer {{subscriberToken}}
+
+### ❌ sem token
+GET {{baseUrl}}/financeiro/studios/{{studioId}}/stripe/status

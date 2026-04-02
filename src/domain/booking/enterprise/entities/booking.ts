@@ -61,8 +61,24 @@ export class Booking extends Entity<BookingProps> {
         return this.props.paymentStatus;
     }
 
+    get paymentRef(): string | null {
+        return this.props.paymentRef;
+    }
+
     get createdAt(): Date {
         return this.props.createdAt;
+    }
+
+    markAsPaid(paymentRef: string): void {
+        this.props.paymentStatus = 'PAID';
+        this.props.status = 'CONFIRMED';
+        this.props.paymentRef = paymentRef;
+    }
+
+    markAsFailed(paymentRef: string): void {
+        this.props.paymentStatus = 'FAILED';
+        this.props.status = 'PENDING';
+        this.props.paymentRef = paymentRef;
     }
 
     static create(props: Omit<BookingProps, 'createdAt'>, id?: UniqueEntityID): Booking {

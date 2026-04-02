@@ -2,6 +2,8 @@ export interface CreateBookingPaymentIntentRequest {
     bookingId: string;
     amountInCents: number;
     currency: string;
+    destinationAccountId: string;
+    applicationFeeAmountInCents?: number;
     customerEmail?: string;
     metadata?: Record<string, string>;
 }

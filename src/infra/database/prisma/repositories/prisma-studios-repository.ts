@@ -33,10 +33,26 @@ export class PrismaStudiosRepository implements StudiosRepository {
         return PrismaStudioMapper.toDomain(studio);
     }
 
+    async findByStripeConnectedAccountId(accountId: string): Promise<Studio | null> {
+        const studio = await this.prisma.studio.findFirst({
+            where: { stripeConnectedAccountId: accountId },
+        });
+        if (!studio) return null;
+        return PrismaStudioMapper.toDomain(studio);
+    }
+
     async create(data: CreateStudioRequest): Promise<Studio> {
         const studio = await this.prisma.studio.create({
             data: {
                 ownerUserId: data.ownerUserId ?? null,
+                stripeConnectedAccountId: data.stripeConnectedAccountId ?? null,
+                stripeOnboardingComplete: data.stripeOnboardingComplete ?? false,
+                stripeChargesEnabled: data.stripeChargesEnabled ?? false,
+                stripePayoutsEnabled: data.stripePayoutsEnabled ?? false,
+                stripeDetailsSubmitted: data.stripeDetailsSubmitted ?? false,
+                stripeRequirementsCurrentlyDue: data.stripeRequirementsCurrentlyDue ?? undefined,
+                stripeRequirementsEventuallyDue: data.stripeRequirementsEventuallyDue ?? undefined,
+                stripeConnectStatus: data.stripeConnectStatus ?? null,
                 name: data.name,
                 slug: data.slug,
                 planTier: data.planTier,
@@ -56,6 +72,14 @@ export class PrismaStudiosRepository implements StudiosRepository {
             where: { id: data.id },
             data: {
                 ownerUserId: data.ownerUserId ?? null,
+                stripeConnectedAccountId: data.stripeConnectedAccountId ?? undefined,
+                stripeOnboardingComplete: data.stripeOnboardingComplete ?? undefined,
+                stripeChargesEnabled: data.stripeChargesEnabled ?? undefined,
+                stripePayoutsEnabled: data.stripePayoutsEnabled ?? undefined,
+                stripeDetailsSubmitted: data.stripeDetailsSubmitted ?? undefined,
+                stripeRequirementsCurrentlyDue: data.stripeRequirementsCurrentlyDue ?? undefined,
+                stripeRequirementsEventuallyDue: data.stripeRequirementsEventuallyDue ?? undefined,
+                stripeConnectStatus: data.stripeConnectStatus ?? undefined,
                 name: data.name,
                 slug: data.slug,
                 planTier: data.planTier,

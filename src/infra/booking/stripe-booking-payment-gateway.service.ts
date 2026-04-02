@@ -28,6 +28,10 @@ export class StripeBookingPaymentGatewayService implements BookingPaymentGateway
             currency: data.currency,
             metadata: data.metadata,
             receipt_email: data.customerEmail,
+            transfer_data: {
+                destination: data.destinationAccountId,
+            },
+            application_fee_amount: data.applicationFeeAmountInCents,
             automatic_payment_methods: {
                 enabled: true,
             },
