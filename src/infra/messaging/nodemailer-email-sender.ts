@@ -35,7 +35,7 @@ export class NodemailerEmailSender implements EmailSender {
             await this.transporter.sendMail({
                 from: process.env.SMTP_FROM || process.env.SMTP_USER,
                 to: email,
-                subject: 'Recuperação de Senha - stageflow',
+                subject: 'Recuperação de Senha - ReservaEstudio',
                 html: `
                     <h2>Recuperação de Senha</h2>
                     <p>Olá, ${name}</p>
@@ -44,7 +44,7 @@ export class NodemailerEmailSender implements EmailSender {
                     <p>Este link expira em 1 hora.</p>
                     <p>Se você não solicitou esta recuperação, ignore este email.</p>
                     <br>
-                    <p>Atenciosamente,<br>Equipe stageflow</p>
+                    <p>Atenciosamente,<br>Equipe ReservaEstudio</p>
                 `,
             });
         } catch (error) {

@@ -3,7 +3,7 @@ description: Aplicar Clean Architecture + DDD no padrão do projeto
 alwaysApply: true
 ---
 
-# StageFlow Backend - Clean Architecture + DDD
+# ReservaEstudio Backend - Clean Architecture + DDD
 
 Sempre seguir o padrão arquitetural já usado em `auth`.
 

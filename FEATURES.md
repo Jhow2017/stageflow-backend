@@ -1,6 +1,6 @@
 # Funcionalidades Futuras
 
-Este documento lista funcionalidades planejadas para implementação futura no sistema stageflow.
+Este documento lista funcionalidades planejadas para implementação futura no sistema ReservaEstudio.
 
 ## 🔐 Autenticação e Segurança
 

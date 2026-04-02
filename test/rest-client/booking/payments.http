@@ -1,5 +1,5 @@
 ### ===============================================
-### STAGEFLOW - BOOKING PAYMENT (CONNECT)
+### RESERVAESTUDIO - BOOKING PAYMENT (CONNECT)
 ### ===============================================
 @baseUrl = http://localhost:4000
 @studioSlug = REPLACE_STUDIO_SLUG

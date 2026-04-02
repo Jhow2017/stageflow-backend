@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+API backend da plataforma **ReservaEstudio** (SaaS multi-tenant para estúdios), construída com [Nest](https://github.com/nestjs/nest) e TypeScript.
 
 ## Project setup
 

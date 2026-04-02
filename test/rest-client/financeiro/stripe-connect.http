@@ -1,5 +1,5 @@
 ### ===============================================
-### STAGEFLOW - FINANCEIRO STRIPE CONNECT (MVP)
+### RESERVAESTUDIO - FINANCEIRO STRIPE CONNECT (MVP)
 ### ===============================================
 @baseUrl = http://localhost:4000
 @studioId = REPLACE_STUDIO_ID

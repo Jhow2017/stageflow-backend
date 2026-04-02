@@ -26,7 +26,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
-    .setTitle('stageflow API')
+    .setTitle('ReservaEstudio API')
     .setDescription('API para gerenciamento de gigs')
     .setVersion('1.0')
     .addBearerAuth()

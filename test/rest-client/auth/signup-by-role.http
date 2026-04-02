@@ -1,5 +1,5 @@
 ### ======================================================
-### STAGEFLOW - TESTES DE CADASTRO POR ROLE (/auth/signup/:role)
+### RESERVAESTUDIO - TESTES DE CADASTRO POR ROLE (/auth/signup/:role)
 ### ======================================================
 
 @baseUrl = http://localhost:4000

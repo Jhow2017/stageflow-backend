@@ -1,5 +1,5 @@
 ### ======================================================
-### STAGEFLOW - TESTES DE CADASTRO (/auth/signup)
+### RESERVAESTUDIO - TESTES DE CADASTRO (/auth/signup)
 ### ======================================================
 
 @baseUrl = http://localhost:4000

@@ -54,7 +54,7 @@ export class ClientAreaController {
                     name: 'Banda Super Sonic',
                     email: 'integrantes@supersonic.com',
                     phone: '11999998888',
-                    bannerUrl: 'https://cdn.stageflow.app/banners/super-sonic.jpg',
+                    bannerUrl: 'https://cdn.reservaestudio.app/banners/super-sonic.jpg',
                     notes: 'Prefere ensaio noturno',
                 },
             },
@@ -101,7 +101,7 @@ export class ClientAreaController {
                     name: 'Banda Super Sonic',
                     email: 'integrantes@supersonic.com',
                     phone: '11999998888',
-                    bannerUrl: 'https://cdn.stageflow.app/banners/super-sonic.jpg',
+                    bannerUrl: 'https://cdn.reservaestudio.app/banners/super-sonic.jpg',
                     notes: 'Prefere ensaio noturno',
                 },
             },
@@ -229,7 +229,7 @@ export class ClientAreaController {
         schema: {
             example: {
                 banner: {
-                    bannerUrl: 'https://cdn.stageflow.app/banners/super-sonic.jpg',
+                    bannerUrl: 'https://cdn.reservaestudio.app/banners/super-sonic.jpg',
                 },
             },
         },

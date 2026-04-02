@@ -36,7 +36,7 @@ export class CreateStudioStripeConnectOnboardingLinkUseCase {
 
         const result = await this.stripeConnectGateway.createOnboardingLink({
             accountId: studio.stripeConnectedAccountId,
-            email: `finance+${studio.id.toString()}@stageflow.app`,
+            email: `finance+${studio.id.toString()}@reservaestudio.app`,
             businessName: studio.name,
             metadata: {
                 studioId: studio.id.toString(),
