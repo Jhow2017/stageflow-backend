@@ -49,12 +49,16 @@ export class RegisterUserByRoleController {
             throw new BadRequestException('Role must be ADMIN or OWNER');
         }
 
-        const { name, email, password } = body;
+        const { name, email, password, phone, document, studioName, studioSlug } = body;
         const { user } = await this.registerUser.execute({
             name,
             email,
             password,
             role,
+            phone,
+            document,
+            studioName,
+            studioSlug,
         });
 
         const authenticatedUser = req.user as User;
@@ -80,6 +84,10 @@ export class RegisterUserByRoleController {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                phone: user.phone,
+                document: user.document,
+                studioName: user.studioName,
+                studioSlug: user.studioSlug,
                 createdAt: user.createdAt,
             },
         };

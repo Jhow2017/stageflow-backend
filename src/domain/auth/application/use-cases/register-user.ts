@@ -10,6 +10,10 @@ export interface RegisterUserRequest {
     email: string;
     password: string;
     role?: Role;
+    phone?: string | null;
+    document?: string | null;
+    studioName?: string | null;
+    studioSlug?: string | null;
 }
 
 export interface RegisterUserResponse {
@@ -35,6 +39,10 @@ export class RegisterUserUseCase {
         email,
         password,
         role,
+        phone,
+        document,
+        studioName,
+        studioSlug,
     }: RegisterUserRequest): Promise<RegisterUserResponse> {
         const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
@@ -48,6 +56,10 @@ export class RegisterUserUseCase {
             name,
             email,
             password: hashedPassword,
+            phone: phone ?? null,
+            document: document ?? null,
+            studioName: studioName ?? null,
+            studioSlug: studioSlug ?? null,
             role: role ?? Role.USER,
             resetPasswordToken: null,
             resetPasswordExpires: null,

@@ -6,6 +6,10 @@ export interface UserProps {
     name: string;
     email: string;
     password: string;
+    phone: string | null;
+    document: string | null;
+    studioName: string | null;
+    studioSlug: string | null;
     role: Role;
     refreshToken: string | null;
     resetPasswordToken: string | null;
@@ -25,6 +29,23 @@ export class User extends Entity<UserProps> {
     get password(): string {
         return this.props.password;
     }
+
+    get phone(): string | null {
+        return this.props.phone;
+    }
+
+    get document(): string | null {
+        return this.props.document;
+    }
+
+    get studioName(): string | null {
+        return this.props.studioName;
+    }
+
+    get studioSlug(): string | null {
+        return this.props.studioSlug;
+    }
+
     get role(): Role {
         return this.props.role;
     }
@@ -70,6 +91,10 @@ export class User extends Entity<UserProps> {
         return new User(
             {
                 ...props,
+                phone: props.phone ?? null,
+                document: props.document ?? null,
+                studioName: props.studioName ?? null,
+                studioSlug: props.studioSlug ?? null,
                 refreshToken: props.refreshToken ?? null,
                 resetPasswordToken: props.resetPasswordToken ?? null,
                 resetPasswordExpires: props.resetPasswordExpires ?? null,

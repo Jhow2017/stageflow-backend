@@ -3,13 +3,15 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@checkoutId = REPLACE_CHECKOUT_ID
-@ownerToken = REPLACE_OWNER_TOKEN
-@subscriberToken = REPLACE_SUBSCRIBER_TOKEN
+@checkoutId = ec28b545-9495-4a92-8b29-0fa4b9f02ee3
+@ownerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MTI1YzVhOC1jMWNlLTQyYTctYmQ2OC0yNjQ2OGFiZGFhOGQiLCJpYXQiOjE3NzUxNzQ0MzEsImV4cCI6MTc3NTc3OTIzMX0.qBRDAfN5esOoi8iK328tDWtoXUaAvGzX2P2Bp0DNj7o
+@subscriberToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZmQyZjllMS0zZWQzLTRmNzQtOWNjZC1jZGUzNWE4ZDMyZjYiLCJpYXQiOjE3NzUxODgyNTMsImV4cCI6MTc3NTc5MzA1M30.5Th17znMGtlUKZR74UwPTG3FnsoarGyPgvfDnv4sSx8
 @stripeSignature = REPLACE_STRIPE_SIGNATURE
 
 ### @name startCheckout
 ### ✅ Iniciar checkout (plano + domínio + pagamento) - requer auth
+### domainType: SUBDOMAIN (grátis) ou CUSTOM_DOMAIN (próprio). Com SUBDOMAIN, subdomain (slug) é obrigatório no body OU studioSlug no perfil.
+### studioName opcional se já no cadastro. CUSTOM_DOMAIN exige customDomain no body.
 POST {{baseUrl}}/subscription-checkout/start
 Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
@@ -17,9 +19,8 @@ Content-Type: application/json
 {
   "planTier": "PROFESSIONAL",
   "billingCycle": "ANNUAL",
-  "studioName": "Rock Valley Studio",
   "domainType": "SUBDOMAIN",
-  "subdomain": "rock-valley-studio",
+  "subdomain": "rock-valley",
   "paymentMethod": "CARD",
   "totalAmount": 1970
 }
@@ -35,7 +36,7 @@ Authorization: Bearer {{subscriberToken}}
 ### ✅ Webhook Stripe (payload assinado)
 POST {{baseUrl}}/payments/stripe/webhook
 stripe-signature: {{stripeSignature}}
-Content-Type: application/json
+Content-Type: application/jsonº;.
 
 {
   "id": "evt_test_webhook",

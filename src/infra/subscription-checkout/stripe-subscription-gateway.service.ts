@@ -51,11 +51,10 @@ export class StripeSubscriptionGatewayService implements StripeSubscriptionGatew
 
         const params = {
             mode: 'subscription',
-            ui_mode: 'embedded',
+            ui_mode: 'embedded_page',
             client_reference_id: input.checkoutId,
             return_url: `${requireEnv('FRONTEND_URL')}/signup/sucesso?session_id={CHECKOUT_SESSION_ID}`,
             customer_email: input.customerEmail,
-            customer_creation: 'always',
             line_items: lineItems,
             payment_method_types: ['card'],
             metadata: input.metadata,

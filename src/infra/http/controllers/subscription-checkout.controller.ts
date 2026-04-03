@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { User } from '../../../domain/auth/enterprise/entities/user';
@@ -33,8 +33,38 @@ export class SubscriptionCheckoutController {
     @ApiResponse({ status: 409, description: 'Subdomínio indisponível' })
     async start(@Body() body: StartSubscriptionCheckoutDto, @Req() req: Request) {
         const user = req.user as User;
+        const studioName = (body.studioName?.trim() || user.studioName?.trim() || '').trim();
+        if (!studioName) {
+            throw new BadRequestException(
+                'studioName is required: send it in the body or save it on the user profile (signup).',
+            );
+        }
+
+        const subdomain =
+            body.subdomain?.trim() || user.studioSlug?.trim() || undefined;
+        const customDomain = body.customDomain?.trim() || undefined;
+
+        if (body.domainType === 'SUBDOMAIN' && !subdomain) {
+            throw new BadRequestException(
+                'Para subdomínio gratuito (domainType SUBDOMAIN), informe o slug em subdomain ou cadastre studioSlug no perfil.',
+            );
+        }
+
+        if (body.domainType === 'CUSTOM_DOMAIN' && !customDomain) {
+            throw new BadRequestException(
+                'Para domínio próprio (domainType CUSTOM_DOMAIN), informe customDomain.',
+            );
+        }
+
         const { checkoutSession } = await this.startSubscriptionCheckoutUseCase.execute({
-            ...body,
+            planTier: body.planTier,
+            billingCycle: body.billingCycle,
+            studioName,
+            domainType: body.domainType,
+            subdomain,
+            customDomain,
+            paymentMethod: body.paymentMethod,
+            totalAmount: body.totalAmount,
             subscriberUserId: user.id.toString(),
             subscriberName: user.name,
             subscriberEmail: user.email,

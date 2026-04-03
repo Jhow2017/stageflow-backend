@@ -102,6 +102,10 @@ export class AuthenticateController {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                phone: user.phone,
+                document: user.document,
+                studioName: user.studioName,
+                studioSlug: user.studioSlug,
                 createdAt: user.createdAt,
             },
         };

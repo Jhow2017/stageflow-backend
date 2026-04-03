@@ -18,6 +18,14 @@ model User {
     name                 String
     email                String    @unique
     password             String
+    /// Telefone / WhatsApp (cadastro público)
+    phone                String?
+    /// CPF ou CNPJ somente dígitos (11 ou 14)
+    document             String?
+    /// Nome do estúdio desejado (pré-cadastro; usado no checkout se não enviado no body)
+    studioName           String?
+    /// Slug desejado para subdomínio (pré-cadastro; usado no checkout se não enviado no body)
+    studioSlug           String?
     role                 String    @default("USER")
     refreshToken         String?
     resetPasswordToken   String?

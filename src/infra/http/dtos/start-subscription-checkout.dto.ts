@@ -11,21 +11,37 @@ export class StartSubscriptionCheckoutDto {
     @IsIn(['MONTHLY', 'ANNUAL'])
     billingCycle: BillingCycle;
 
-    @ApiProperty({ example: 'Rock Valley Studio' })
+    @ApiPropertyOptional({
+        description:
+            'Nome do estúdio. Se omitido, usa o valor salvo no perfil do usuário (cadastro).',
+        example: 'Rock Valley Studio',
+    })
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    studioName: string;
+    studioName?: string;
 
-    @ApiProperty({ enum: ['SUBDOMAIN', 'CUSTOM_DOMAIN'] })
+    @ApiProperty({
+        enum: ['SUBDOMAIN', 'CUSTOM_DOMAIN'],
+        description:
+            'SUBDOMAIN = subdomínio gratuito na plataforma (passo "Configure seu domínio"). CUSTOM_DOMAIN = domínio próprio (add-on cobrado no Stripe; UI pode mostrar +valor em v2).',
+    })
     @IsIn(['SUBDOMAIN', 'CUSTOM_DOMAIN'])
     domainType: DomainType;
 
-    @ApiPropertyOptional({ example: 'seuestudio' })
+    @ApiPropertyOptional({
+        description:
+            'Slug do subdomínio gratuito (ex.: seuestudio → seuestudio.sua-plataforma). Obrigatório na prática quando domainType é SUBDOMAIN: envie aqui ou use studioSlug já salvo no cadastro.',
+        example: 'seuestudio',
+    })
     @IsOptional()
     @IsString()
     subdomain?: string;
 
-    @ApiPropertyOptional({ example: 'www.seuestudio.com.br' })
+    @ApiPropertyOptional({
+        description:
+            'Domínio próprio quando domainType é CUSTOM_DOMAIN (ex.: www.seuestudio.com.br). Obrigatório nesse caso.',
+        example: 'www.seuestudio.com.br',
+    })
     @IsOptional()
     @IsString()
     customDomain?: string;

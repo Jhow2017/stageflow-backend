@@ -1,10 +1,10 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, Inject, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { RegisterUserUseCase } from '../../../domain/auth/application/use-cases/register-user';
 import { AuditLogger } from '../../../domain/auth/application/services/audit-logger';
 import { Public } from '../../../infra/auth/public';
-import { RegisterUserDto } from '../dtos/register-user.dto';
+import { RegisterSubscriberDto } from '../dtos/register-subscriber.dto';
 
 @ApiTags('Auth')
 @Controller('/auth/signup')
@@ -17,7 +17,8 @@ export class RegisterUserController {
     @Post()
     @Public()
     @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({ summary: 'Registrar novo usuário' })
+    @ApiBody({ type: RegisterSubscriberDto })
+    @ApiOperation({ summary: 'Registrar novo usuário (cadastro completo: contato, documento, estúdio)' })
     @ApiResponse({
         status: 201,
         description: 'Usuário criado com sucesso',
@@ -40,13 +41,17 @@ export class RegisterUserController {
         status: 409,
         description: 'Email já cadastrado',
     })
-    async handle(@Body() body: RegisterUserDto, @Req() req: Request) {
-        const { name, email, password } = body;
+    async handle(@Body() body: RegisterSubscriberDto, @Req() req: Request) {
+        const { name, email, password, phone, document, studioName, studioSlug } = body;
 
         const { user } = await this.registerUser.execute({
             name,
             email,
             password,
+            phone,
+            document,
+            studioName,
+            studioSlug,
         });
 
         // Registrar log de auditoria
@@ -70,6 +75,10 @@ export class RegisterUserController {
                 id: user.id.toString(),
                 name: user.name,
                 email: user.email,
+                phone: user.phone,
+                document: user.document,
+                studioName: user.studioName,
+                studioSlug: user.studioSlug,
                 createdAt: user.createdAt,
             },
         };

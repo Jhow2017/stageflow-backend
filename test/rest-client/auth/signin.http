@@ -3,11 +3,11 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@email = jhowgama2@gmail.com
+@email = jhowgama21@gmail.com
 @password = senha123
 @ownerEmail = jhongama_jesus@hotmail.com
-@ownerPassword = 123456789
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3OWQ2OTA3Mi04MjMzLTQ2NjUtOWUzMi0wZGJmMTk2NjZmY2EiLCJpYXQiOjE3NzUwMDI2NTcsImV4cCI6MTc3NTYwNzQ1N30.ajQ5_07KrmLbgir6sT6QnDV4yBUnXs6Jwd-J-Y5zym8
+@ownerPassword = 123456
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZmQyZjllMS0zZWQzLTRmNzQtOWNjZC1jZGUzNWE4ZDMyZjYiLCJpYXQiOjE3NzUxODgyNTMsImV4cCI6MTc3NTc5MzA1M30.5Th17znMGtlUKZR74UwPTG3FnsoarGyPgvfDnv4sSx8
 @subscriberEmail = contato@rockvalley.com.br
 @subscriberPassword = 123456
 

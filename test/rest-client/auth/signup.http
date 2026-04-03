@@ -3,21 +3,25 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@newUserEmail = jhongama_jesus@hotmail.com
+@newUserEmail = jhowgama21@gmail.com
 
 ### Pré-requisito
 ### 1) Subir API: yarn start
 ### 2) Banco com migrações aplicadas
 
 ### @name signupSuccess
-### ✅ Cadastro com dados válidos
+### ✅ Cadastro com dados válidos (contrato completo: contato + documento + estúdio)
 POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
   "name": "Jhow Gama",
   "email": "{{newUserEmail}}",
-  "password": "senha123"
+  "password": "senha123",
+  "phone": "+5511999999999",
+  "document": "529.982.247-25",
+  "studioName": "Rock Valley Studio",
+  "studioSlug": "rock-valley-studio"
 }
 
 ### ❌ Sem nome (erro de validação)
