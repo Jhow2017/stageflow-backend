@@ -134,6 +134,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.BAD_REQUEST;
         }
 
+        if (exception.constructor.name === 'InvalidBrFqdnError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'BrDomainAvailabilityQueryFailedError') {
+            return HttpStatus.SERVICE_UNAVAILABLE;
+        }
+
+        if (exception.constructor.name === 'BrDomainNotRegisterableError') {
+            return HttpStatus.CONFLICT;
+        }
+
         if (exception.constructor.name === 'RoomLimitReachedError') {
             return HttpStatus.CONFLICT;
         }

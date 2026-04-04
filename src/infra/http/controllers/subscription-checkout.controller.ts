@@ -33,7 +33,15 @@ export class SubscriptionCheckoutController {
     @ApiResponse({ status: 201, description: 'Checkout iniciado com sucesso' })
     @ApiResponse({ status: 400, description: 'Dados inválidos de domínio/plano' })
     @ApiResponse({ status: 401, description: 'Não autenticado' })
-    @ApiResponse({ status: 409, description: 'Subdomínio indisponível' })
+    @ApiResponse({
+        status: 409,
+        description:
+            'Subdomínio indisponível ou domínio .br não elegível para registro (consulta ISAVAIL / Registro.br)',
+    })
+    @ApiResponse({
+        status: 503,
+        description: 'Falha ao consultar disponibilidade do domínio .br no Registro.br (rede ou serviço ISAVAIL)',
+    })
     async start(@Body() body: StartSubscriptionCheckoutDto, @Req() req: Request) {
         const user = req.user as User;
         const studioName = (body.studioName?.trim() || user.studioName?.trim() || '').trim();

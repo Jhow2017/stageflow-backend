@@ -9,6 +9,11 @@ import {
 } from '../../enterprise/entities/subscription-checkout-session';
 import { SubscriptionCheckoutSessionsRepository } from '../repositories/subscription-checkout-sessions-repository';
 import { SubdomainAvailabilityChecker } from '../services/subdomain-availability-checker';
+import { BrDomainAvailabilityGateway } from '../../../domain-availability/application/services/br-domain-availability-gateway';
+import { normalizeBrFqdn, isRegisterableIsavailStatus } from '../../../domain-availability/application/br-fqdn';
+import { summaryPtFromIsavailResult } from '../../../domain-availability/application/isavail-status-messages';
+import { BrDomainAvailabilityQueryFailedError } from '../../../domain-availability/application/errors/br-domain-availability-query-failed-error';
+import { BrDomainNotRegisterableError } from '../../../domain-availability/application/errors/br-domain-not-registerable-error';
 
 export interface StartSubscriptionCheckoutRequest {
     subscriberUserId: string;
@@ -74,6 +79,8 @@ export class StartSubscriptionCheckoutUseCase {
         private subscriptionCheckoutSessionsRepository: SubscriptionCheckoutSessionsRepository,
         @Inject(SubdomainAvailabilityChecker)
         private subdomainAvailabilityChecker: SubdomainAvailabilityChecker,
+        @Inject(BrDomainAvailabilityGateway)
+        private brDomainAvailabilityGateway: BrDomainAvailabilityGateway,
     ) { }
 
     async execute(data: StartSubscriptionCheckoutRequest): Promise<StartSubscriptionCheckoutResponse> {
@@ -83,6 +90,34 @@ export class StartSubscriptionCheckoutUseCase {
 
         if (data.domainType === 'CUSTOM_DOMAIN' && !data.customDomain) {
             throw new InvalidCheckoutDomainError();
+        }
+
+        let normalizedCustomDomain: string | null = null;
+        if (data.domainType === 'CUSTOM_DOMAIN' && data.customDomain) {
+            try {
+                normalizedCustomDomain = normalizeBrFqdn(data.customDomain);
+            } catch {
+                throw new InvalidCheckoutDomainError();
+            }
+
+            let availability: Awaited<ReturnType<BrDomainAvailabilityGateway['checkAvailability']>>;
+            try {
+                availability = await this.brDomainAvailabilityGateway.checkAvailability(normalizedCustomDomain);
+            } catch {
+                throw new BrDomainAvailabilityQueryFailedError();
+            }
+
+            if (availability.statusCode === 8) {
+                throw new BrDomainAvailabilityQueryFailedError(summaryPtFromIsavailResult(availability));
+            }
+
+            if (availability.statusCode < 0 || availability.statusCode > 9) {
+                throw new BrDomainAvailabilityQueryFailedError();
+            }
+
+            if (!isRegisterableIsavailStatus(availability.statusCode)) {
+                throw new BrDomainNotRegisterableError(summaryPtFromIsavailResult(availability));
+            }
         }
 
         let normalizedSubdomain: string | null = null;
@@ -107,7 +142,7 @@ export class StartSubscriptionCheckoutUseCase {
             ownerEmail: data.subscriberEmail,
             domainType: data.domainType,
             subdomain: normalizedSubdomain,
-            customDomain: data.customDomain ?? null,
+            customDomain: normalizedCustomDomain ?? data.customDomain ?? null,
             paymentMethod: data.paymentMethod,
             totalAmount: data.totalAmount,
             status: 'PENDING_PAYMENT',

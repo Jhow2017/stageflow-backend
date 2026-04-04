@@ -1,0 +1,24 @@
+### ======================================================
+### RESERVAESTUDIO - DISPONIBILIDADE DOMÍNIO .br (ISAVAIL)
+### Requer API rodando (ex.: yarn start:dev) e UDP 43 até o Registro.br.
+### Resposta inclui `registroBrSearchUrl`: busca no Registro.br com `?fqdn=...` (redirect no front).
+### ======================================================
+
+@baseUrl = http://localhost:4000
+@fqdnDisponivelTroque = meuestudio-exemplo-xyz123.com.br
+@fqdnRegistrado = google.com.br
+
+### ✅ Consulta: domínio (troque @fqdnDisponivelTroque por algo que queira testar)
+GET {{baseUrl}}/public/domains/br/availability?fqdn={{fqdnDisponivelTroque}}
+
+### ✅ Consulta: domínio amplamente registrado (esperado: registerableAccordingToRegistroBr = false)
+GET {{baseUrl}}/public/domains/br/availability?fqdn={{fqdnRegistrado}}
+
+### ✅ FQDN curto válido (um rótulo + .br) — esperado: já registrado / indisponível
+GET {{baseUrl}}/public/domains/br/availability?fqdn=registro.br
+
+### ❌ FQDN inválido (não termina em .br)
+GET {{baseUrl}}/public/domains/br/availability?fqdn=example.com
+
+### ❌ Parâmetro ausente (validação)
+GET {{baseUrl}}/public/domains/br/availability

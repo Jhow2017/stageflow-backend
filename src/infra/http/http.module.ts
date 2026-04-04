@@ -80,6 +80,10 @@ import { CreateStudioStripeConnectOnboardingLinkUseCase } from '../../domain/boo
 import { GetStudioStripeConnectStatusUseCase } from '../../domain/booking/application/use-cases/get-studio-stripe-connect-status';
 import { CreateStudioStripeDashboardLinkUseCase } from '../../domain/booking/application/use-cases/create-studio-stripe-dashboard-link';
 import { CreateBookingPaymentIntentController } from './controllers/create-booking-payment-intent.controller';
+import { CheckBrDomainAvailabilityController } from './controllers/check-br-domain-availability.controller';
+import { CheckBrDomainAvailabilityUseCase } from '../../domain/domain-availability/application/use-cases/check-br-domain-availability';
+import { BrDomainAvailabilityGateway } from '../../domain/domain-availability/application/services/br-domain-availability-gateway';
+import { IsavailUdpBrDomainAvailabilityGateway } from '../domain-availability/isavail-udp-br-domain-availability.gateway';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
@@ -107,6 +111,7 @@ import { CreateBookingPaymentIntentController } from './controllers/create-booki
         StripeWebhookController,
         FinanceStripeController,
         CreateBookingPaymentIntentController,
+        CheckBrDomainAvailabilityController,
     ],
     providers: [
         RegisterUserUseCase,
@@ -127,6 +132,7 @@ import { CreateBookingPaymentIntentController } from './controllers/create-booki
         ListStudioClientsUseCase,
         ListGlobalStudiosUseCase,
         GetGlobalStudioDetailsUseCase,
+        CheckBrDomainAvailabilityUseCase,
         StartSubscriptionCheckoutUseCase,
         GetSubscriptionCheckoutUseCase,
         ApproveSubscriptionCheckoutUseCase,
@@ -154,6 +160,10 @@ import { CreateBookingPaymentIntentController } from './controllers/create-booki
         {
             provide: SubdomainAvailabilityChecker,
             useClass: StudioSubdomainAvailabilityChecker,
+        },
+        {
+            provide: BrDomainAvailabilityGateway,
+            useClass: IsavailUdpBrDomainAvailabilityGateway,
         },
         {
             provide: StripeSubscriptionGateway,
