@@ -3,10 +3,8 @@ import { BookingsRepository } from '../repositories/bookings-repository';
 import { StudiosRepository } from '../repositories/studios-repository';
 import { UsersRepository } from '../../../auth/application/repositories/users-repository';
 import { StudioNotFoundError } from './create-public-booking';
-import {
-    BookingNotFoundForPaymentError,
-    StudioMercadoPagoSellerNotConfiguredError,
-} from './create-booking-payment-intent';
+import { MercadoPagoSellerNotConnectedError } from '../../../auth/application/errors/mercadopago-seller-not-connected.error';
+import { BookingNotFoundForPaymentError } from './create-booking-payment-intent';
 import { MercadoPagoBookingCustomerPaymentGateway } from '../services/mercado-pago-booking-customer-payment-gateway';
 import { MercadoPagoBookingApplicationFeeConfig } from '../services/mercado-pago-booking-application-fee-config';
 import { UseCaseError } from '../../../../core/errors/use-case-error';
@@ -62,12 +60,12 @@ export class CreateBookingMercadoPagoPaymentUseCase {
             throw new BookingPayoutProviderNotMercadoPagoError();
         }
         if (!studio.ownerUserId) {
-            throw new StudioMercadoPagoSellerNotConfiguredError();
+            throw new MercadoPagoSellerNotConnectedError();
         }
 
         const owner = await this.usersRepository.findById(studio.ownerUserId);
         if (!owner?.mercadoPagoAccessToken || !owner.mercadoPagoPublicKey) {
-            throw new StudioMercadoPagoSellerNotConfiguredError();
+            throw new MercadoPagoSellerNotConnectedError();
         }
 
         const booking = await this.bookingsRepository.findById(req.bookingId);

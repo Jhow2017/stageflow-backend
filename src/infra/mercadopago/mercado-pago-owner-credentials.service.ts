@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../../domain/auth/enterprise/entities/user';
+import { MercadoPagoSellerNotConnectedError } from '../../domain/auth/application/errors/mercadopago-seller-not-connected.error';
 import { UsersRepository } from '../../domain/auth/application/repositories/users-repository';
 import { MercadoPagoOauthService } from './mercado-pago-oauth.service';
 
@@ -16,7 +16,7 @@ export class MercadoPagoOwnerCredentialsService {
     async getValidAccessTokenForUser(userId: string): Promise<string> {
         const user = await this.usersRepository.findById(userId);
         if (!user?.mercadoPagoAccessToken) {
-            throw new Error('Mercado Pago not connected for this user');
+            throw new MercadoPagoSellerNotConnectedError();
         }
 
         if (
@@ -38,12 +38,5 @@ export class MercadoPagoOwnerCredentialsService {
         }
 
         return user.mercadoPagoAccessToken;
-    }
-
-    async ensureUserHasPublicKey(user: User): Promise<string> {
-        if (!user.mercadoPagoPublicKey) {
-            throw new Error('Mercado Pago public key missing; reconnect or save credentials');
-        }
-        return user.mercadoPagoPublicKey;
     }
 }

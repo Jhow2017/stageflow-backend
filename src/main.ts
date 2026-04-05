@@ -27,7 +27,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('ReservaEstudio API')
-    .setDescription('API para gerenciamento de gigs')
+    .setDescription('API Reserva Estúdio — estúdios, reservas, assinatura e pagamentos (Mercado Pago / Stripe)')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

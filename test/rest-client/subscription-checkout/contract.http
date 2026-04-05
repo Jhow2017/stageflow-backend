@@ -3,10 +3,13 @@
 ### ======================================================
 
 @baseUrl = http://localhost:4000
-@checkoutId = ec28b545-9495-4a92-8b29-0fa4b9f02ee3
-@ownerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MTI1YzVhOC1jMWNlLTQyYTctYmQ2OC0yNjQ2OGFiZGFhOGQiLCJpYXQiOjE3NzUxNzQ0MzEsImV4cCI6MTc3NTc3OTIzMX0.qBRDAfN5esOoi8iK328tDWtoXUaAvGzX2P2Bp0DNj7o
-@subscriberToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZmQyZjllMS0zZWQzLTRmNzQtOWNjZC1jZGUzNWE4ZDMyZjYiLCJpYXQiOjE3NzUxODgyNTMsImV4cCI6MTc3NTc5MzA1M30.5Th17znMGtlUKZR74UwPTG3FnsoarGyPgvfDnv4sSx8
+### IDs e tokens: preencha após signup/login (evita JWT expirado nos exemplos)
+@checkoutId = REPLACE_CHECKOUT_UUID
+@ownerToken = REPLACE_OWNER_JWT
+@subscriberToken = REPLACE_SUBSCRIBER_JWT
 @stripeSignature = REPLACE_STRIPE_SIGNATURE
+### Opcional: após aprovar checkout manualmente, use o studioId retornado na sala abaixo
+@studioIdAfterApprove = REPLACE_STUDIO_UUID
 
 ### @name startCheckout
 ### ✅ Iniciar checkout (plano + domínio + pagamento) - requer auth
@@ -88,7 +91,8 @@ Content-Type: application/json
 }
 
 ### ✅ Adicionar sala via Settings (assinante USER vinculado)
-POST {{baseUrl}}/settings/studios/{{approveCheckout.response.body.checkout.studioId}}/rooms
+### Substitua {{studioIdAfterApprove}} pelo studioId do GET checkout após APPROVED, ou use a variável do client REST
+POST {{baseUrl}}/settings/studios/{{studioIdAfterApprove}}/rooms
 Authorization: Bearer {{subscriberToken}}
 Content-Type: application/json
 

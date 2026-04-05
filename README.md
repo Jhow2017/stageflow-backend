@@ -1,132 +1,74 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Reserva Estúdio — API (backend)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API **NestJS** + TypeScript + Prisma para o SaaS **Reserva Estúdio** (estúdios, salas, reservas, clientes, assinatura da plataforma e pagamentos via **Mercado Pago** e **Stripe**).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Documentação útil
 
-## Description
+- [docs/integracao-mercadopago-reserva-estudio.md](docs/integracao-mercadopago-reserva-estudio.md) — MP neste repositório (webhooks, OAuth, reservas).
+- [docs/integracao-mercadopago-gigmanager.md](docs/integracao-mercadopago-gigmanager.md) — referência do produto GigManager (caminhos de código externos).
+- Contratos HTTP: [test/rest-client/](test/rest-client/) e [api.http](api.http).
+- Swagger em desenvolvimento: `http://localhost:4000/api` (ajuste host/porta conforme `PORT`).
 
-API backend da plataforma **ReservaEstudio** (SaaS multi-tenant para estúdios), construída com [Nest](https://github.com/nestjs/nest) e TypeScript.
-
-## Project setup
+## Setup
 
 ```bash
-$ yarn install
+yarn install
 ```
 
-## Banco de dados (Docker) e variáveis de ambiente
+## Banco de dados (Docker) e ambiente
 
-1. Subir o Postgres local:
+1. Subir o Postgres:
 
 ```bash
-$ docker compose up -d
+docker compose up -d
 ```
 
 - Container: `reservaestudio-postgres`
-- Porta host: **5433** → `5432` no container
-- Banco criado pelo Compose: **`reservaestudio`**
+- Porta no host: **5433** → `5432` no container
+- Banco: `reservaestudio`
 
-2. Copiar variáveis de ambiente:
-
-```bash
-$ cp .env.example .env
-```
-
-Preencha segredos reais (`JWT_SECRET`, SMTP, Stripe, etc.). O arquivo `.env.example` usa como convenção de produção:
-
-- Site: `https://www.reservaestudio.com.br`
-- API: `https://api.reservaestudio.com.br`
-
-Em desenvolvimento local, ajuste `FRONTEND_URL` e `BACKEND_URL` (por exemplo `http://localhost:3000` e `http://localhost:4000`).
-
-3. Aplicar o schema no banco:
+2. Variáveis de ambiente:
 
 ```bash
-$ npx prisma migrate dev
+cp .env.example .env
 ```
 
-`DATABASE_URL` deve apontar para `...localhost:5433/reservaestudio?schema=public` (veja `.env.example`).
+Edite `.env`: `JWT_SECRET`, `DATABASE_URL`, `FRONTEND_URL`, `BACKEND_URL`, chaves **Mercado Pago** e/ou **Stripe** conforme o fluxo que for usar. Em local, use por exemplo `http://localhost:3000` e `http://localhost:4000`.
 
-## Compile and run the project
+3. Migrações:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+npx prisma migrate dev
 ```
 
-## Run tests
+A `DATABASE_URL` padrão do exemplo aponta para `localhost:5433` (alinhado ao `docker-compose.yml`).
+
+## Executar
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+yarn start:dev    # watch
+yarn start        # sem watch
+yarn start:prod   # produção (build prévio)
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Testes
 
 ```bash
-$ yarn install -g mau
-$ mau deploy
+yarn test
+yarn test:e2e
+yarn test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Build
 
-## Resources
+```bash
+yarn build
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## Deploy
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Siga o processo do seu provedor (variáveis de ambiente, `npx prisma migrate deploy`, processo Node/Nest). Documentação geral do framework: [NestJS — Deployment](https://docs.nestjs.com/deployment).
 
-## Support
+## Licença
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+UNLICENSED (projeto privado), salvo indicação contrária no repositório.

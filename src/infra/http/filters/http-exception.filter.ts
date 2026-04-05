@@ -158,7 +158,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.UNAUTHORIZED;
         }
 
-        if (exception.constructor.name === 'StudioMercadoPagoSellerNotConfiguredError') {
+        if (exception.constructor.name === 'MercadoPagoSellerNotConnectedError') {
             return HttpStatus.BAD_REQUEST;
         }
 

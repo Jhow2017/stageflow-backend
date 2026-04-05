@@ -95,26 +95,16 @@ Este documento lista funcionalidades planejadas para implementação futura no s
 
 ## 🎯 Funcionalidades do Sistema
 
-### Gigs (Eventos/Shows)
+### Roadmap alinhado ao produto (estúdios e reservas)
 
-**Status:** 📋 Planejado  
-**Prioridade:** Alta
+**Nota:** a antiga seção “Gigs (eventos/shows)” era **texto de template** (boilerplate Nest) e **não faz parte do escopo** do Reserva Estúdio.
 
-**Descrição:**
+**Status:** 📋 Planejado (exemplos, ajustar prioridades com o time)
 
-- CRUD completo de Gigs (eventos/shows)
-- Relacionamento com usuários (criador, participantes)
-- Status de gigs (rascunho, publicado, cancelado, concluído)
-- Filtros e busca
-- Upload de imagens/flyers
-
-**Implementação sugerida:**
-
-- Criar domínio `gigs` seguindo clean architecture
-- Entidade `Gig` com campos: título, descrição, data/hora, local, preço, status
-- Use cases: `CreateGigUseCase`, `ListGigsUseCase`, `GetGigUseCase`, `UpdateGigUseCase`, `DeleteGigUseCase`
-- Controllers REST com Swagger
-- Validações e permissões (apenas criador pode editar)
+- Lembretes / notificações de reserva (e-mail ou push)
+- Políticas de cancelamento e reembolso (regras por estúdio)
+- Relatórios financeiros para o dono (MP vs Stripe, períodos)
+- Jobs: expiração de PIX pendente, reconciliação opcional com webhooks
 
 ---
 
@@ -123,7 +113,7 @@ Este documento lista funcionalidades planejadas para implementação futura no s
 ### Ordem Sugerida de Implementação:
 
 1. **Verificação de Email** - Funcionalidade básica de segurança
-2. **Gigs** - Funcionalidade core do sistema
+2. **Roadmap de reservas / financeiro** - conforme lista acima
 3. **2FA** - Segurança avançada
 4. **Sessões Múltiplas** - Melhoria de UX
 
@@ -137,4 +127,4 @@ Este documento lista funcionalidades planejadas para implementação futura no s
 
 ---
 
-**Última atualização:** 2024-12-08
+**Última atualização:** 2026-04-05

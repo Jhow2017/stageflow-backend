@@ -1,5 +1,9 @@
 # Integração Mercado Pago no GigManager — documentação para reutilização (ex.: Reserva Estúdio)
 
+> **Aviso (Reserva Estúdio — este monorepo)**  
+> A implementação **deste** backend está descrita em [**integracao-mercadopago-reserva-estudio.md**](./integracao-mercadopago-reserva-estudio.md).  
+> No GigManager costuma existir um único webhook tipo `POST /webhooks/mercadopago`. **Aqui** usamos URLs separadas: **`POST /webhooks/mercadopago/subscription`** (assinatura da plataforma) e **`POST /webhooks/reservations/mercadopago`** (pagamento de reserva), além de **`POST /webhooks/mercadopago/deauthorization`**. Os trechos abaixo referem **caminhos e arquivos do repositório `gigmanager-backend`**, não deste projeto.
+
 Este documento descreve **como o GigManager integra com o Mercado Pago** no backend NestJS: OAuth (MPC), checkout de **assinatura da plataforma**, checkout de **pagamentos do assinante** (hoje modelados como “proposta/orçamento”), webhooks, dados persistidos e jobs. Serve como **mapa de implementação** para clonar o padrão em outro produto (por exemplo, **Reserva Estúdio**: assinatura + **reservas** no lugar de propostas).
 
 **Fonte do código:** a integração completa está na branch **`origin/master`** do repositório `gigmanager-backend`. Em outros branches (por exemplo `auth-complete`) ela pode estar ausente; use `git show origin/master:<caminho>` ou faça checkout de `master` para inspecionar os arquivos citados.
