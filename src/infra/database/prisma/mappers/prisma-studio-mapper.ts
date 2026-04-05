@@ -9,6 +9,7 @@ export class PrismaStudioMapper {
         return Studio.create(
             {
                 ownerUserId: raw.ownerUserId,
+                payoutProvider: raw.payoutProvider as 'MERCADOPAGO' | 'STRIPE',
                 stripeConnectedAccountId: raw.stripeConnectedAccountId,
                 stripeOnboardingComplete: raw.stripeOnboardingComplete,
                 stripeChargesEnabled: raw.stripeChargesEnabled,

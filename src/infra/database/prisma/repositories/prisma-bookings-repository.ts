@@ -24,6 +24,7 @@ export class PrismaBookingsRepository implements BookingsRepository {
                 status: booking.status,
                 paymentStatus: booking.paymentStatus,
                 paymentRef: booking.paymentRef,
+                mercadoPagoPaymentId: booking.mercadoPagoPaymentId,
             },
         });
     }
@@ -33,6 +34,14 @@ export class PrismaBookingsRepository implements BookingsRepository {
             where: { id },
         });
 
+        if (!booking) return null;
+        return PrismaBookingMapper.toDomain(booking);
+    }
+
+    async findByMercadoPagoPaymentId(mercadoPagoPaymentId: string): Promise<Booking | null> {
+        const booking = await this.prisma.booking.findUnique({
+            where: { mercadoPagoPaymentId },
+        });
         if (!booking) return null;
         return PrismaBookingMapper.toDomain(booking);
     }

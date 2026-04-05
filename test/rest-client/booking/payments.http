@@ -7,7 +7,20 @@
 @stripeSignature = REPLACE_STRIPE_SIGNATURE
 
 ### @name createPaymentIntent
+### Resposta: { payment: { provider: "stripe", ... } } ou { payment: { provider: "mercadopago", publicKey, amountReais, ... } }
 POST {{baseUrl}}/public/studios/{{studioSlug}}/bookings/{{bookingId}}/payment-intent
+
+### @name createMercadoPagoBookingPayment
+### Após tokenizar no front com publicKey do passo anterior (estúdio com payoutProvider MERCADOPAGO)
+POST {{baseUrl}}/public/studios/{{studioSlug}}/bookings/{{bookingId}}/mercadopago/payment
+Content-Type: application/json
+
+{
+  "payerEmail": "cliente@example.com",
+  "paymentMethodId": "pix",
+  "payerIdentificationType": "CPF",
+  "payerIdentificationNumber": "12345678909"
+}
 
 ### @name webhookPaymentSucceeded
 POST {{baseUrl}}/payments/stripe/webhook

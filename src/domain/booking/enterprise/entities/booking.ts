@@ -17,6 +17,7 @@ export interface BookingProps {
     paymentMethod: PaymentMethod | null;
     paymentStatus: PaymentStatus;
     paymentRef: string | null;
+    mercadoPagoPaymentId: string | null;
     createdAt: Date;
 }
 
@@ -65,6 +66,10 @@ export class Booking extends Entity<BookingProps> {
         return this.props.paymentRef;
     }
 
+    get mercadoPagoPaymentId(): string | null {
+        return this.props.mercadoPagoPaymentId;
+    }
+
     get createdAt(): Date {
         return this.props.createdAt;
     }
@@ -81,6 +86,10 @@ export class Booking extends Entity<BookingProps> {
         this.props.paymentRef = paymentRef;
     }
 
+    assignMercadoPagoPaymentId(mercadoPagoPaymentId: string): void {
+        this.props.mercadoPagoPaymentId = mercadoPagoPaymentId;
+    }
+
     static create(props: Omit<BookingProps, 'createdAt'>, id?: UniqueEntityID): Booking {
         return new Booking(
             {
@@ -89,6 +98,7 @@ export class Booking extends Entity<BookingProps> {
                 paymentMethod: props.paymentMethod ?? null,
                 paymentStatus: props.paymentStatus ?? 'PENDING',
                 paymentRef: props.paymentRef ?? null,
+                mercadoPagoPaymentId: props.mercadoPagoPaymentId ?? null,
                 createdAt: new Date(),
             },
             id,

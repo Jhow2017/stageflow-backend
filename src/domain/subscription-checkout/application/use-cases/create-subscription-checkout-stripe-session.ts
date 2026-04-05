@@ -23,6 +23,12 @@ export class SubscriptionCheckoutAlreadyApprovedError extends UseCaseError {
     }
 }
 
+export class SubscriptionCheckoutNotStripeProviderError extends UseCaseError {
+    constructor() {
+        super('This subscription checkout uses Mercado Pago; use the Mercado Pago payment endpoints');
+    }
+}
+
 export class CreateSubscriptionCheckoutStripeSessionUseCase {
     constructor(
         @Inject(SubscriptionCheckoutSessionsRepository)
@@ -45,6 +51,10 @@ export class CreateSubscriptionCheckoutStripeSessionUseCase {
 
         if (checkout.status !== 'PENDING_PAYMENT') {
             throw new SubscriptionCheckoutAlreadyApprovedError();
+        }
+
+        if (checkout.platformPaymentProvider !== 'STRIPE') {
+            throw new SubscriptionCheckoutNotStripeProviderError();
         }
 
         const stripeSession: CreateSubscriptionCheckoutSessionResponse =

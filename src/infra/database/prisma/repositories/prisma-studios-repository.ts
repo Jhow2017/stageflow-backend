@@ -45,6 +45,7 @@ export class PrismaStudiosRepository implements StudiosRepository {
         const studio = await this.prisma.studio.create({
             data: {
                 ownerUserId: data.ownerUserId ?? null,
+                payoutProvider: data.payoutProvider ?? 'MERCADOPAGO',
                 stripeConnectedAccountId: data.stripeConnectedAccountId ?? null,
                 stripeOnboardingComplete: data.stripeOnboardingComplete ?? false,
                 stripeChargesEnabled: data.stripeChargesEnabled ?? false,
@@ -72,6 +73,7 @@ export class PrismaStudiosRepository implements StudiosRepository {
             where: { id: data.id },
             data: {
                 ownerUserId: data.ownerUserId ?? null,
+                payoutProvider: data.payoutProvider ?? undefined,
                 stripeConnectedAccountId: data.stripeConnectedAccountId ?? undefined,
                 stripeOnboardingComplete: data.stripeOnboardingComplete ?? undefined,
                 stripeChargesEnabled: data.stripeChargesEnabled ?? undefined,

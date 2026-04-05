@@ -84,6 +84,48 @@ import { CheckBrDomainAvailabilityController } from './controllers/check-br-doma
 import { CheckBrDomainAvailabilityUseCase } from '../../domain/domain-availability/application/use-cases/check-br-domain-availability';
 import { BrDomainAvailabilityGateway } from '../../domain/domain-availability/application/services/br-domain-availability-gateway';
 import { IsavailUdpBrDomainAvailabilityGateway } from '../domain-availability/isavail-udp-br-domain-availability.gateway';
+import { PlatformSubscriptionPaymentConfig } from '../../domain/subscription-checkout/application/services/platform-subscription-payment-config';
+import { EnvPlatformSubscriptionPaymentConfigService } from '../subscription-checkout/env-platform-subscription-payment-config.service';
+import { MercadoPagoWebhookEventsRepository } from '../../domain/subscription-checkout/application/repositories/mercadopago-webhook-events-repository';
+import { PrismaMercadoPagoWebhookEventsRepository } from '../database/prisma/repositories/prisma-mercadopago-webhook-events-repository';
+import { MercadoPagoPlatformSubscriptionGateway } from '../../domain/subscription-checkout/application/services/mercadopago-platform-subscription-gateway';
+import { MercadoPagoPlatformSubscriptionGatewayService } from '../mercadopago/mercado-pago-platform-subscription-gateway.service';
+import { MercadoPagoWebhookSignatureValidator } from '../mercadopago/mercado-pago-webhook-signature-validator';
+import { HandleMercadoPagoSubscriptionWebhookUseCase } from '../../domain/subscription-checkout/application/use-cases/handle-mercadopago-subscription-webhook';
+import { CreateMercadoPagoSubscriptionPreapprovalUseCase } from '../../domain/subscription-checkout/application/use-cases/create-mercadopago-subscription-preapproval';
+import { AttachMercadoPagoSubscriptionPreapprovalCardUseCase } from '../../domain/subscription-checkout/application/use-cases/attach-mercadopago-subscription-preapproval-card';
+import { CreateMercadoPagoSubscriptionTransparentPaymentUseCase } from '../../domain/subscription-checkout/application/use-cases/create-mercadopago-subscription-transparent-payment';
+import { MercadoPagoOauthService } from '../mercadopago/mercado-pago-oauth.service';
+import { MercadoPagoOauthStateStore } from '../mercadopago/mercado-pago-oauth-state.store';
+import {
+    MercadoPagoOAuthAuthorizationAdapter,
+    MercadoPagoOAuthPkceStateAdapter,
+    MercadoPagoOAuthTokenExchangeAdapter,
+} from '../mercadopago/mercadopago-oauth-ports.adapters';
+import {
+    MercadoPagoOAuthAuthorizationPort,
+    MercadoPagoOAuthPkceStatePort,
+    MercadoPagoOAuthTokenExchangePort,
+} from '../../domain/auth/application/ports/mercadopago-oauth.ports';
+import { StartMercadoPagoOauthConnectUseCase } from '../../domain/auth/application/use-cases/start-mercadopago-oauth-connect';
+import { ProcessMercadoPagoOauthCallbackUseCase } from '../../domain/auth/application/use-cases/process-mercadopago-oauth-callback';
+import { SaveMercadoPagoManualCredentialsUseCase } from '../../domain/auth/application/use-cases/save-mercadopago-manual-credentials';
+import { HandleMercadoPagoDeauthorizationWebhookUseCase } from '../../domain/auth/application/use-cases/handle-mercadopago-deauthorization-webhook';
+import { MercadoPagoBookingPaymentService } from '../mercadopago/mercado-pago-booking-payment.service';
+import { MercadoPagoOwnerCredentialsService } from '../mercadopago/mercado-pago-owner-credentials.service';
+import { MercadoPagoSellerBookingPaymentReader } from '../../domain/booking/application/services/mercado-pago-seller-booking-payment-reader';
+import { MercadoPagoSellerBookingPaymentReaderService } from '../mercadopago/mercado-pago-seller-booking-payment-reader.service';
+import { MercadoPagoBookingCustomerPaymentGateway } from '../../domain/booking/application/services/mercado-pago-booking-customer-payment-gateway';
+import { MercadoPagoBookingCustomerPaymentGatewayService } from '../mercadopago/mercado-pago-booking-customer-payment-gateway.service';
+import { MercadoPagoBookingApplicationFeeConfig } from '../../domain/booking/application/services/mercado-pago-booking-application-fee-config';
+import { EnvMercadoPagoBookingFeeConfigService } from '../mercadopago/env-mercadopago-booking-fee-config.service';
+import { CreateBookingMercadoPagoPaymentUseCase } from '../../domain/booking/application/use-cases/create-booking-mercadopago-payment';
+import { HandleMercadoPagoReservationWebhookUseCase } from '../../domain/booking/application/use-cases/handle-mercadopago-reservation-webhook';
+import { UpdateStudioPayoutProviderUseCase } from '../../domain/booking/application/use-cases/update-studio-payout-provider';
+import { MercadoPagoWebhooksController } from './controllers/mercadopago-webhooks.controller';
+import { MercadoPagoAuthController } from './controllers/mercadopago-auth.controller';
+import { FinanceStudioPayoutController } from './controllers/finance-studio-payout.controller';
+import { CreateBookingMercadoPagoPaymentController } from './controllers/create-booking-mercadopago-payment.controller';
 
 @Module({
     imports: [DatabaseModule, CryptographyModule, AuthModule, MessagingModule],
@@ -111,7 +153,11 @@ import { IsavailUdpBrDomainAvailabilityGateway } from '../domain-availability/is
         StripeWebhookController,
         FinanceStripeController,
         CreateBookingPaymentIntentController,
+        CreateBookingMercadoPagoPaymentController,
         CheckBrDomainAvailabilityController,
+        MercadoPagoWebhooksController,
+        MercadoPagoAuthController,
+        FinanceStudioPayoutController,
     ],
     providers: [
         RegisterUserUseCase,
@@ -149,6 +195,22 @@ import { IsavailUdpBrDomainAvailabilityGateway } from '../domain-availability/is
         CreateStudioStripeConnectOnboardingLinkUseCase,
         GetStudioStripeConnectStatusUseCase,
         CreateStudioStripeDashboardLinkUseCase,
+        CreateMercadoPagoSubscriptionPreapprovalUseCase,
+        AttachMercadoPagoSubscriptionPreapprovalCardUseCase,
+        CreateMercadoPagoSubscriptionTransparentPaymentUseCase,
+        HandleMercadoPagoSubscriptionWebhookUseCase,
+        HandleMercadoPagoReservationWebhookUseCase,
+        HandleMercadoPagoDeauthorizationWebhookUseCase,
+        StartMercadoPagoOauthConnectUseCase,
+        ProcessMercadoPagoOauthCallbackUseCase,
+        SaveMercadoPagoManualCredentialsUseCase,
+        CreateBookingMercadoPagoPaymentUseCase,
+        UpdateStudioPayoutProviderUseCase,
+        MercadoPagoWebhookSignatureValidator,
+        MercadoPagoOauthService,
+        MercadoPagoOauthStateStore,
+        MercadoPagoBookingPaymentService,
+        MercadoPagoOwnerCredentialsService,
         {
             provide: SubscriptionCheckoutSessionsRepository,
             useClass: PrismaSubscriptionCheckoutSessionsRepository,
@@ -156,6 +218,42 @@ import { IsavailUdpBrDomainAvailabilityGateway } from '../domain-availability/is
         {
             provide: StripeWebhookEventsRepository,
             useClass: PrismaStripeWebhookEventsRepository,
+        },
+        {
+            provide: MercadoPagoWebhookEventsRepository,
+            useClass: PrismaMercadoPagoWebhookEventsRepository,
+        },
+        {
+            provide: PlatformSubscriptionPaymentConfig,
+            useClass: EnvPlatformSubscriptionPaymentConfigService,
+        },
+        {
+            provide: MercadoPagoPlatformSubscriptionGateway,
+            useClass: MercadoPagoPlatformSubscriptionGatewayService,
+        },
+        {
+            provide: MercadoPagoOAuthAuthorizationPort,
+            useClass: MercadoPagoOAuthAuthorizationAdapter,
+        },
+        {
+            provide: MercadoPagoOAuthPkceStatePort,
+            useClass: MercadoPagoOAuthPkceStateAdapter,
+        },
+        {
+            provide: MercadoPagoOAuthTokenExchangePort,
+            useClass: MercadoPagoOAuthTokenExchangeAdapter,
+        },
+        {
+            provide: MercadoPagoSellerBookingPaymentReader,
+            useClass: MercadoPagoSellerBookingPaymentReaderService,
+        },
+        {
+            provide: MercadoPagoBookingCustomerPaymentGateway,
+            useClass: MercadoPagoBookingCustomerPaymentGatewayService,
+        },
+        {
+            provide: MercadoPagoBookingApplicationFeeConfig,
+            useClass: EnvMercadoPagoBookingFeeConfigService,
         },
         {
             provide: SubdomainAvailabilityChecker,

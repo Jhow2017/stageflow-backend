@@ -158,6 +158,34 @@ export class HttpExceptionFilter implements ExceptionFilter {
             return HttpStatus.UNAUTHORIZED;
         }
 
+        if (exception.constructor.name === 'StudioMercadoPagoSellerNotConfiguredError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'StudioStripePayoutNotReadyError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'MercadoPagoOAuthCallbackInvalidError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'SubscriptionCheckoutMercadoPagoPreapprovalMissingError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'SubscriptionCheckoutNotMercadoPagoProviderError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'SubscriptionCheckoutPreapprovalNotCardError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        if (exception.constructor.name === 'SubscriptionCheckoutTransparentPaymentWrongMethodError') {
+            return HttpStatus.BAD_REQUEST;
+        }
+
         return HttpStatus.BAD_REQUEST;
     }
 }

@@ -1,0 +1,24 @@
+### ===============================================
+### RESERVAESTUDIO — PROVEDOR DE RECEBIMENTO (STUDIO)
+### ===============================================
+@baseUrl = http://localhost:4000
+@studioId = REPLACE_STUDIO_ID
+@subscriberToken = REPLACE_SUBSCRIBER_JWT
+
+### Receber reservas via Mercado Pago (padrão) ou Stripe Connect
+PATCH {{baseUrl}}/financeiro/studios/{{studioId}}/payout-provider
+Authorization: Bearer {{subscriberToken}}
+Content-Type: application/json
+
+{
+  "payoutProvider": "MERCADOPAGO"
+}
+
+### Escolher Stripe (exige Connect habilitado)
+PATCH {{baseUrl}}/financeiro/studios/{{studioId}}/payout-provider
+Authorization: Bearer {{subscriberToken}}
+Content-Type: application/json
+
+{
+  "payoutProvider": "STRIPE"
+}

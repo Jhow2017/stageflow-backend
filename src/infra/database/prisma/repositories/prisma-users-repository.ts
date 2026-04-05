@@ -36,6 +36,14 @@ export class PrismaUsersRepository implements UsersRepository {
         return PrismaUserMapper.toDomain(user);
     }
 
+    async findByMercadoPagoUserId(mercadoPagoUserId: string): Promise<User | null> {
+        const user = await this.prisma.user.findFirst({
+            where: { mercadoPagoUserId },
+        });
+        if (!user) return null;
+        return PrismaUserMapper.toDomain(user);
+    }
+
     async create(user: User): Promise<void> {
         const data = PrismaUserMapper.toPrisma(user);
 

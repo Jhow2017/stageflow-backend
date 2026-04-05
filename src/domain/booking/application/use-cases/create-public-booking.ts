@@ -211,6 +211,7 @@ export class CreatePublicBookingUseCase {
             paymentMethod: paymentMethod ?? null,
             paymentStatus: status === 'CONFIRMED' ? 'PAID' : 'PENDING',
             paymentRef: null,
+            mercadoPagoPaymentId: null,
         });
 
         await this.bookingsRepository.create(booking);

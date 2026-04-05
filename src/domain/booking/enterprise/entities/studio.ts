@@ -1,8 +1,11 @@
 import { Entity } from '../../../../core/entities/entity';
 import { UniqueEntityID } from '../../../../core/entities/unique-entity-id';
 
+export type StudioPayoutProvider = 'MERCADOPAGO' | 'STRIPE';
+
 export interface StudioProps {
     ownerUserId: string | null;
+    payoutProvider: StudioPayoutProvider;
     stripeConnectedAccountId: string | null;
     stripeOnboardingComplete: boolean;
     stripeChargesEnabled: boolean;
@@ -26,6 +29,10 @@ export interface StudioProps {
 export class Studio extends Entity<StudioProps> {
     get ownerUserId(): string | null {
         return this.props.ownerUserId;
+    }
+
+    get payoutProvider(): StudioPayoutProvider {
+        return this.props.payoutProvider;
     }
 
     get name(): string {
@@ -100,8 +107,14 @@ export class Studio extends Entity<StudioProps> {
         return this.props.updatedAt;
     }
 
+    setPayoutProvider(provider: StudioPayoutProvider): void {
+        this.props.payoutProvider = provider;
+        this.props.updatedAt = new Date();
+    }
+
     update(data: {
         ownerUserId: string | null;
+        payoutProvider: StudioPayoutProvider;
         stripeConnectedAccountId: string | null;
         stripeOnboardingComplete: boolean;
         stripeChargesEnabled: boolean;
@@ -120,6 +133,7 @@ export class Studio extends Entity<StudioProps> {
         timezone: string;
     }): void {
         this.props.ownerUserId = data.ownerUserId;
+        this.props.payoutProvider = data.payoutProvider;
         this.props.stripeConnectedAccountId = data.stripeConnectedAccountId;
         this.props.stripeOnboardingComplete = data.stripeOnboardingComplete;
         this.props.stripeChargesEnabled = data.stripeChargesEnabled;
@@ -168,6 +182,7 @@ export class Studio extends Entity<StudioProps> {
             StudioProps,
             | 'createdAt'
             | 'updatedAt'
+            | 'payoutProvider'
             | 'stripeConnectedAccountId'
             | 'stripeOnboardingComplete'
             | 'stripeChargesEnabled'
@@ -177,6 +192,7 @@ export class Studio extends Entity<StudioProps> {
             | 'stripeRequirementsEventuallyDue'
             | 'stripeConnectStatus'
         > & {
+            payoutProvider?: StudioPayoutProvider;
             stripeConnectedAccountId?: string | null;
             stripeOnboardingComplete?: boolean;
             stripeChargesEnabled?: boolean;
@@ -193,6 +209,7 @@ export class Studio extends Entity<StudioProps> {
         return new Studio(
             {
                 ...props,
+                payoutProvider: props.payoutProvider ?? 'MERCADOPAGO',
                 stripeConnectedAccountId: props.stripeConnectedAccountId ?? null,
                 stripeOnboardingComplete: props.stripeOnboardingComplete ?? false,
                 stripeChargesEnabled: props.stripeChargesEnabled ?? false,

@@ -2,6 +2,7 @@ import { Studio } from '../../enterprise/entities/studio';
 
 export interface CreateStudioRequest {
     ownerUserId?: string | null;
+    payoutProvider?: 'MERCADOPAGO' | 'STRIPE';
     stripeConnectedAccountId?: string | null;
     stripeOnboardingComplete?: boolean;
     stripeChargesEnabled?: boolean;

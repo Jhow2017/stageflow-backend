@@ -30,13 +30,37 @@ GET {{baseUrl}}/subscription-checkout/{{checkoutId}}
 Authorization: Bearer {{subscriberToken}}
 
 ### ✅ Criar sessão Stripe (Checkout hospedado) — resposta: stripe.url para abrir no navegador
+### (Somente se checkout.platformPaymentProvider === STRIPE, ex.: env PLATFORM_SUBSCRIPTION_PROVIDER=stripe)
 POST {{baseUrl}}/subscription-checkout/{{checkoutId}}/stripe/session
 Authorization: Bearer {{subscriberToken}}
+
+### ✅ Mercado Pago — preapproval (cartão, etapa 1) — checkout.platformPaymentProvider === MERCADOPAGO
+POST {{baseUrl}}/subscription-checkout/{{checkoutId}}/mercadopago/preapproval
+Authorization: Bearer {{subscriberToken}}
+
+### ✅ Mercado Pago — anexar token de cartão (etapa 2)
+POST {{baseUrl}}/subscription-checkout/{{checkoutId}}/mercadopago/preapproval/card
+Authorization: Bearer {{subscriberToken}}
+Content-Type: application/json
+
+{
+  "cardTokenId": "REPLACE_MP_CARD_TOKEN"
+}
+
+### ✅ Mercado Pago — PIX / boleto (pagamento transparente)
+POST {{baseUrl}}/subscription-checkout/{{checkoutId}}/mercadopago/transparent-payment
+Authorization: Bearer {{subscriberToken}}
+Content-Type: application/json
+
+{
+  "payerIdentificationType": "CPF",
+  "payerIdentificationNumber": "12345678909"
+}
 
 ### ✅ Webhook Stripe (payload assinado)
 POST {{baseUrl}}/payments/stripe/webhook
 stripe-signature: {{stripeSignature}}
-Content-Type: application/jsonº;.
+Content-Type: application/json
 
 {
   "id": "evt_test_webhook",

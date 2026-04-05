@@ -13,20 +13,15 @@ export class CreateBookingPaymentIntentController {
     @Post()
     @Public()
     @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({ summary: 'Criar PaymentIntent da reserva para checkout no Stripe' })
+    @ApiOperation({
+        summary:
+            'Iniciar pagamento da reserva: Stripe (PaymentIntent) ou contexto Mercado Pago (publicKey + valor)',
+    })
     @ApiParam({ name: 'studioSlug', example: 'super-sonic' })
     @ApiParam({ name: 'bookingId', example: 'uuid-da-reserva' })
     @ApiResponse({
         status: 201,
-        description: 'PaymentIntent criado',
-        schema: {
-            example: {
-                payment: {
-                    paymentIntentId: 'pi_123',
-                    clientSecret: 'pi_123_secret_456',
-                },
-            },
-        },
+        description: 'Stripe: PaymentIntent; Mercado Pago: dados para tokenizar no front',
     })
     @ApiResponse({ status: 404, description: 'Reserva não encontrada ou studio indisponível para cobrança' })
     async handle(

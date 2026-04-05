@@ -12,6 +12,7 @@ export abstract class BookingsRepository {
     abstract save(booking: Booking): Promise<void>;
     abstract hasConflict(params: FindConflictRequest): Promise<boolean>;
     abstract findById(id: string): Promise<Booking | null>;
+    abstract findByMercadoPagoPaymentId(mercadoPagoPaymentId: string): Promise<Booking | null>;
     abstract findByStudioId(studioId: string): Promise<Booking[]>;
     abstract findByStudioIdAndClientId(studioId: string, clientId: string): Promise<Booking[]>;
 }

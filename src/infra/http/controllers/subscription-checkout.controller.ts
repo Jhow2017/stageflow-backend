@@ -1,4 +1,15 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    Post,
+    Req,
+    UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Request } from 'express';
@@ -11,6 +22,11 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { OwnerGuard } from '../../auth/owner.guard';
 import { ApproveSubscriptionCheckoutDto } from '../dtos/approve-subscription-checkout.dto';
 import { StartSubscriptionCheckoutDto } from '../dtos/start-subscription-checkout.dto';
+import { AttachMercadoPagoPreapprovalCardDto } from '../dtos/attach-mercadopago-preapproval-card.dto';
+import { MercadoPagoSubscriptionTransparentPaymentDto } from '../dtos/mercadopago-subscription-transparent-payment.dto';
+import { CreateMercadoPagoSubscriptionPreapprovalUseCase } from '../../../domain/subscription-checkout/application/use-cases/create-mercadopago-subscription-preapproval';
+import { AttachMercadoPagoSubscriptionPreapprovalCardUseCase } from '../../../domain/subscription-checkout/application/use-cases/attach-mercadopago-subscription-preapproval-card';
+import { CreateMercadoPagoSubscriptionTransparentPaymentUseCase } from '../../../domain/subscription-checkout/application/use-cases/create-mercadopago-subscription-transparent-payment';
 
 @ApiTags('Subscription Checkout')
 /** Rotas com JWT; polling do GET após checkout esgotava o limite global (10/min por IP). */
@@ -22,6 +38,9 @@ export class SubscriptionCheckoutController {
         private getSubscriptionCheckoutUseCase: GetSubscriptionCheckoutUseCase,
         private approveSubscriptionCheckoutUseCase: ApproveSubscriptionCheckoutUseCase,
         private createSubscriptionCheckoutStripeSessionUseCase: CreateSubscriptionCheckoutStripeSessionUseCase,
+        private createMercadoPagoSubscriptionPreapprovalUseCase: CreateMercadoPagoSubscriptionPreapprovalUseCase,
+        private attachMercadoPagoSubscriptionPreapprovalCardUseCase: AttachMercadoPagoSubscriptionPreapprovalCardUseCase,
+        private createMercadoPagoSubscriptionTransparentPaymentUseCase: CreateMercadoPagoSubscriptionTransparentPaymentUseCase,
     ) { }
 
     @Post('/start')
@@ -139,6 +158,74 @@ export class SubscriptionCheckoutController {
         return { stripe };
     }
 
+    @Post('/:checkoutId/mercadopago/preapproval')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @HttpCode(HttpStatus.CREATED)
+    @ApiOperation({ summary: 'Mercado Pago: criar preapproval pendente (assinatura cartão, 1ª etapa)' })
+    @ApiParam({ name: 'checkoutId' })
+    @ApiResponse({ status: 201, description: 'Preapproval criado' })
+    async createMercadoPagoPreapproval(@Param('checkoutId') checkoutId: string, @Req() req: Request) {
+        const user = req.user as User;
+        const result = await this.createMercadoPagoSubscriptionPreapprovalUseCase.execute({
+            checkoutId,
+            requesterUserId: user.id.toString(),
+            requesterRole: user.role,
+        });
+        return { mercadoPago: { preapprovalId: result.mercadoPagoPreapprovalId } };
+    }
+
+    @Post('/:checkoutId/mercadopago/preapproval/card')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Mercado Pago: anexar token de cartão ao preapproval (2ª etapa)' })
+    @ApiParam({ name: 'checkoutId' })
+    @ApiBody({ type: AttachMercadoPagoPreapprovalCardDto })
+    async attachMercadoPagoCard(
+        @Param('checkoutId') checkoutId: string,
+        @Body() body: AttachMercadoPagoPreapprovalCardDto,
+        @Req() req: Request,
+    ) {
+        const user = req.user as User;
+        await this.attachMercadoPagoSubscriptionPreapprovalCardUseCase.execute({
+            checkoutId,
+            cardTokenId: body.cardTokenId,
+            requesterUserId: user.id.toString(),
+            requesterRole: user.role,
+        });
+        return { ok: true };
+    }
+
+    @Post('/:checkoutId/mercadopago/transparent-payment')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @HttpCode(HttpStatus.CREATED)
+    @ApiOperation({ summary: 'Mercado Pago: pagamento transparente (PIX / boleto)' })
+    @ApiParam({ name: 'checkoutId' })
+    @ApiBody({ type: MercadoPagoSubscriptionTransparentPaymentDto })
+    async createMercadoPagoTransparentPayment(
+        @Param('checkoutId') checkoutId: string,
+        @Body() body: MercadoPagoSubscriptionTransparentPaymentDto,
+        @Req() req: Request,
+    ) {
+        const user = req.user as User;
+        const result = await this.createMercadoPagoSubscriptionTransparentPaymentUseCase.execute({
+            checkoutId,
+            requesterUserId: user.id.toString(),
+            requesterRole: user.role,
+            payerIdentificationType: body.payerIdentificationType,
+            payerIdentificationNumber: body.payerIdentificationNumber,
+        });
+        return {
+            mercadoPago: {
+                paymentId: result.mercadoPagoPaymentId,
+                status: result.status,
+                pointOfInteraction: result.pointOfInteraction,
+            },
+        };
+    }
+
     @Post('/:checkoutId/approve')
     @UseGuards(JwtAuthGuard, OwnerGuard)
     @ApiBearerAuth()
@@ -181,6 +268,9 @@ export class SubscriptionCheckoutController {
         stripeCheckoutSessionId: string | null;
         stripeCustomerId: string | null;
         stripeSubscriptionId: string | null;
+        platformPaymentProvider: string;
+        mercadoPagoPreapprovalId: string | null;
+        mercadoPagoPaymentId: string | null;
         createdAt: Date;
         updatedAt: Date;
     }) {
@@ -201,6 +291,9 @@ export class SubscriptionCheckoutController {
                 studioId: checkoutSession.studioId,
                 subscriberUserId: checkoutSession.subscriberUserId,
                 paymentReference: checkoutSession.paymentReference,
+                platformPaymentProvider: checkoutSession.platformPaymentProvider,
+                mercadoPagoPreapprovalId: checkoutSession.mercadoPagoPreapprovalId,
+                mercadoPagoPaymentId: checkoutSession.mercadoPagoPaymentId,
                 stripeCheckoutSessionId: checkoutSession.stripeCheckoutSessionId,
                 stripeCustomerId: checkoutSession.stripeCustomerId,
                 stripeSubscriptionId: checkoutSession.stripeSubscriptionId,

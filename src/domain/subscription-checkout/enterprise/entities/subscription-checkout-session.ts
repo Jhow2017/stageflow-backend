@@ -6,6 +6,7 @@ export type BillingCycle = 'MONTHLY' | 'ANNUAL';
 export type DomainType = 'SUBDOMAIN' | 'CUSTOM_DOMAIN';
 export type PaymentMethod = 'CARD' | 'PIX' | 'BOLETO';
 export type SubscriptionCheckoutStatus = 'PENDING_PAYMENT' | 'APPROVED' | 'REJECTED' | 'EXPIRED';
+export type PlatformPaymentProvider = 'MERCADOPAGO' | 'STRIPE';
 
 export interface SubscriptionCheckoutSessionProps {
     planTier: PlanTier;
@@ -19,12 +20,15 @@ export interface SubscriptionCheckoutSessionProps {
     paymentMethod: PaymentMethod;
     totalAmount: number;
     status: SubscriptionCheckoutStatus;
+    platformPaymentProvider: PlatformPaymentProvider;
     studioId: string | null;
     subscriberUserId: string | null;
     paymentReference: string | null;
     stripeCheckoutSessionId: string | null;
     stripeCustomerId: string | null;
     stripeSubscriptionId: string | null;
+    mercadoPagoPreapprovalId: string | null;
+    mercadoPagoPaymentId: string | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -41,12 +45,15 @@ export class SubscriptionCheckoutSession extends Entity<SubscriptionCheckoutSess
     get paymentMethod(): PaymentMethod { return this.props.paymentMethod; }
     get totalAmount(): number { return this.props.totalAmount; }
     get status(): SubscriptionCheckoutStatus { return this.props.status; }
+    get platformPaymentProvider(): PlatformPaymentProvider { return this.props.platformPaymentProvider; }
     get studioId(): string | null { return this.props.studioId; }
     get subscriberUserId(): string | null { return this.props.subscriberUserId; }
     get paymentReference(): string | null { return this.props.paymentReference; }
     get stripeCheckoutSessionId(): string | null { return this.props.stripeCheckoutSessionId; }
     get stripeCustomerId(): string | null { return this.props.stripeCustomerId; }
     get stripeSubscriptionId(): string | null { return this.props.stripeSubscriptionId; }
+    get mercadoPagoPreapprovalId(): string | null { return this.props.mercadoPagoPreapprovalId; }
+    get mercadoPagoPaymentId(): string | null { return this.props.mercadoPagoPaymentId; }
     get createdAt(): Date { return this.props.createdAt; }
     get updatedAt(): Date { return this.props.updatedAt; }
 
@@ -81,6 +88,16 @@ export class SubscriptionCheckoutSession extends Entity<SubscriptionCheckoutSess
         this.props.updatedAt = new Date();
     }
 
+    bindMercadoPagoPreapproval(preapprovalId: string): void {
+        this.props.mercadoPagoPreapprovalId = preapprovalId;
+        this.props.updatedAt = new Date();
+    }
+
+    bindMercadoPagoPayment(paymentId: string): void {
+        this.props.mercadoPagoPaymentId = paymentId;
+        this.props.updatedAt = new Date();
+    }
+
     static create(
         props: Omit<SubscriptionCheckoutSessionProps, 'createdAt' | 'updatedAt'> & {
             createdAt?: Date;
@@ -91,10 +108,13 @@ export class SubscriptionCheckoutSession extends Entity<SubscriptionCheckoutSess
         return new SubscriptionCheckoutSession(
             {
                 ...props,
+                platformPaymentProvider: props.platformPaymentProvider ?? 'MERCADOPAGO',
                 paymentReference: props.paymentReference ?? null,
                 stripeCheckoutSessionId: props.stripeCheckoutSessionId ?? null,
                 stripeCustomerId: props.stripeCustomerId ?? null,
                 stripeSubscriptionId: props.stripeSubscriptionId ?? null,
+                mercadoPagoPreapprovalId: props.mercadoPagoPreapprovalId ?? null,
+                mercadoPagoPaymentId: props.mercadoPagoPaymentId ?? null,
                 createdAt: props.createdAt ?? new Date(),
                 updatedAt: props.updatedAt ?? new Date(),
             },

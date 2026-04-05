@@ -23,12 +23,15 @@ export class PrismaSubscriptionCheckoutSessionsRepository implements Subscriptio
                 paymentMethod: session.paymentMethod,
                 totalAmount: session.totalAmount,
                 status: session.status,
+                platformPaymentProvider: session.platformPaymentProvider,
                 studioId: session.studioId,
                 subscriberUserId: session.subscriberUserId,
                 paymentReference: session.paymentReference,
                 stripeCheckoutSessionId: session.stripeCheckoutSessionId,
                 stripeCustomerId: session.stripeCustomerId,
                 stripeSubscriptionId: session.stripeSubscriptionId,
+                mercadoPagoPreapprovalId: session.mercadoPagoPreapprovalId,
+                mercadoPagoPaymentId: session.mercadoPagoPaymentId,
                 createdAt: session.createdAt,
                 updatedAt: session.updatedAt,
             },
@@ -47,6 +50,22 @@ export class PrismaSubscriptionCheckoutSessionsRepository implements Subscriptio
         return PrismaSubscriptionCheckoutSessionMapper.toDomain(session);
     }
 
+    async findByMercadoPagoPaymentId(mercadoPagoPaymentId: string): Promise<SubscriptionCheckoutSession | null> {
+        const session = await this.prisma.subscriptionCheckout.findFirst({
+            where: { mercadoPagoPaymentId },
+        });
+        if (!session) return null;
+        return PrismaSubscriptionCheckoutSessionMapper.toDomain(session);
+    }
+
+    async findByMercadoPagoPreapprovalId(mercadoPagoPreapprovalId: string): Promise<SubscriptionCheckoutSession | null> {
+        const session = await this.prisma.subscriptionCheckout.findFirst({
+            where: { mercadoPagoPreapprovalId },
+        });
+        if (!session) return null;
+        return PrismaSubscriptionCheckoutSessionMapper.toDomain(session);
+    }
+
     async save(session: SubscriptionCheckoutSession): Promise<void> {
         await this.prisma.subscriptionCheckout.update({
             where: { id: session.id.toString() },
@@ -58,6 +77,8 @@ export class PrismaSubscriptionCheckoutSessionsRepository implements Subscriptio
                 stripeCheckoutSessionId: session.stripeCheckoutSessionId,
                 stripeCustomerId: session.stripeCustomerId,
                 stripeSubscriptionId: session.stripeSubscriptionId,
+                mercadoPagoPreapprovalId: session.mercadoPagoPreapprovalId,
+                mercadoPagoPaymentId: session.mercadoPagoPaymentId,
                 updatedAt: session.updatedAt,
             },
         });

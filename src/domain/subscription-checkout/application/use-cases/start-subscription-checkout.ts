@@ -9,6 +9,7 @@ import {
 } from '../../enterprise/entities/subscription-checkout-session';
 import { SubscriptionCheckoutSessionsRepository } from '../repositories/subscription-checkout-sessions-repository';
 import { SubdomainAvailabilityChecker } from '../services/subdomain-availability-checker';
+import { PlatformSubscriptionPaymentConfig } from '../services/platform-subscription-payment-config';
 import { BrDomainAvailabilityGateway } from '../../../domain-availability/application/services/br-domain-availability-gateway';
 import { normalizeBrFqdn, isRegisterableIsavailStatus } from '../../../domain-availability/application/br-fqdn';
 import { summaryPtFromIsavailResult } from '../../../domain-availability/application/isavail-status-messages';
@@ -81,6 +82,8 @@ export class StartSubscriptionCheckoutUseCase {
         private subdomainAvailabilityChecker: SubdomainAvailabilityChecker,
         @Inject(BrDomainAvailabilityGateway)
         private brDomainAvailabilityGateway: BrDomainAvailabilityGateway,
+        @Inject(PlatformSubscriptionPaymentConfig)
+        private platformSubscriptionPaymentConfig: PlatformSubscriptionPaymentConfig,
     ) { }
 
     async execute(data: StartSubscriptionCheckoutRequest): Promise<StartSubscriptionCheckoutResponse> {
@@ -146,12 +149,15 @@ export class StartSubscriptionCheckoutUseCase {
             paymentMethod: data.paymentMethod,
             totalAmount: data.totalAmount,
             status: 'PENDING_PAYMENT',
+            platformPaymentProvider: this.platformSubscriptionPaymentConfig.getProvider(),
             studioId: null,
             subscriberUserId: data.subscriberUserId,
             paymentReference: null,
             stripeCheckoutSessionId: null,
             stripeCustomerId: null,
             stripeSubscriptionId: null,
+            mercadoPagoPreapprovalId: null,
+            mercadoPagoPaymentId: null,
         });
 
         await this.subscriptionCheckoutSessionsRepository.create(session);

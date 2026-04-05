@@ -13,6 +13,11 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum MercadoPagoConnectionType {
+    OAUTH
+    MANUAL
+}
+
 model User {
     id                   String    @id @default(uuid())
     name                 String
@@ -30,17 +35,26 @@ model User {
     refreshToken         String?
     resetPasswordToken   String?
     resetPasswordExpires DateTime?
+    mercadoPagoConnectionType MercadoPagoConnectionType?
+    mercadoPagoAccessToken    String?
+    mercadoPagoPublicKey      String?
+    mercadoPagoUserId        String?
+    mercadoPagoRefreshToken   String?
+    mercadoPagoTokenExpiresAt DateTime?
+    mercadoPagoConnectedAt    DateTime?
     createdAt            DateTime  @default(now())
     updatedAt            DateTime  @updatedAt
     clients              Client[]
     ownedStudios         Studio[]  @relation("StudioOwner")
 
+    @@index([mercadoPagoUserId])
     @@map("users")
 }
 
 model Studio {
     id         String    @id @default(uuid())
     ownerUserId String?
+    payoutProvider PayoutProvider @default(MERCADOPAGO)
     stripeConnectedAccountId String?
     stripeOnboardingComplete Boolean   @default(false)
     stripeChargesEnabled Boolean       @default(false)
@@ -73,6 +87,16 @@ enum PlanTier {
     STARTER
     PROFESSIONAL
     ENTERPRISE
+}
+
+enum PayoutProvider {
+    MERCADOPAGO
+    STRIPE
+}
+
+enum PlatformPaymentProvider {
+    MERCADOPAGO
+    STRIPE
 }
 
 model Room {
@@ -148,6 +172,7 @@ model Booking {
     paymentMethod PaymentMethod?
     paymentStatus PaymentStatus @default(PENDING)
     paymentRef    String?
+    mercadoPagoPaymentId String? @unique
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
     studio        Studio        @relation(fields: [studioId], references: [id], onDelete: Cascade)
@@ -203,12 +228,15 @@ model SubscriptionCheckout {
     paymentMethod String
     totalAmount Decimal                    @db.Decimal(10, 2)
     status      SubscriptionCheckoutStatus @default(PENDING_PAYMENT)
+    platformPaymentProvider PlatformPaymentProvider @default(MERCADOPAGO)
     studioId    String?
     subscriberUserId String?
     paymentReference String?
     stripeCheckoutSessionId String?
     stripeCustomerId String?
     stripeSubscriptionId String?
+    mercadoPagoPreapprovalId String?
+    mercadoPagoPaymentId String?
     createdAt   DateTime                   @default(now())
     updatedAt   DateTime                   @updatedAt
 
@@ -216,6 +244,8 @@ model SubscriptionCheckout {
     @@index([ownerEmail])
     @@index([stripeCheckoutSessionId])
     @@index([stripeSubscriptionId])
+    @@index([mercadoPagoPreapprovalId])
+    @@index([mercadoPagoPaymentId])
     @@map("subscription_checkouts")
 }
 
@@ -229,4 +259,16 @@ model StripeWebhookEvent {
 
     @@index([provider])
     @@map("stripe_webhook_events")
+}
+
+model MercadoPagoWebhookEvent {
+    id          String   @id @default(uuid())
+    resourceId  String
+    topic       String
+    payload     Json?
+    processedAt DateTime @default(now())
+
+    @@unique([resourceId, topic])
+    @@index([topic])
+    @@map("mercadopago_webhook_events")
 }

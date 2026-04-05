@@ -149,6 +149,7 @@ export class HandleStripeSubscriptionWebhookUseCase {
                     await this.studiosRepository.update({
                         id: studio.id.toString(),
                         ownerUserId: studio.ownerUserId,
+                        payoutProvider: studio.payoutProvider,
                         stripeConnectedAccountId: studio.stripeConnectedAccountId,
                         stripeOnboardingComplete: studio.stripeOnboardingComplete,
                         stripeChargesEnabled: studio.stripeChargesEnabled,

@@ -1,0 +1,52 @@
+### ======================================================
+### MERCADO PAGO — OAuth vendedor + webhooks (referência)
+### ======================================================
+@baseUrl = http://localhost:4000
+@subscriberToken = REPLACE_SUBSCRIBER_JWT
+@mpSignature = REPLACE_X_SIGNATURE_HEX
+
+### Iniciar OAuth (JWT) — abrir mercadoPago.authorizationUrl no browser
+GET {{baseUrl}}/auth/mercadopago/connect
+Authorization: Bearer {{subscriberToken}}
+
+### Callback é chamado pelo MP no browser (público) — não invocar manualmente aqui
+# GET {{baseUrl}}/auth/mercadopago/callback?code=...&state=...
+
+### Credenciais manuais (alternativa ao OAuth)
+POST {{baseUrl}}/auth/mercadopago/manual-credentials
+Authorization: Bearer {{subscriberToken}}
+Content-Type: application/json
+
+{
+  "accessToken": "REPLACE_MP_ACCESS_TOKEN",
+  "publicKey": "REPLACE_MP_PUBLIC_KEY"
+}
+
+### Webhook assinatura plataforma (corpo real do MP + header x-signature)
+POST {{baseUrl}}/webhooks/mercadopago/subscription
+x-signature: {{mpSignature}}
+Content-Type: application/json
+
+{
+  "type": "payment",
+  "data": { "id": "123456789" }
+}
+
+### Webhook reservas
+POST {{baseUrl}}/webhooks/reservations/mercadopago
+x-signature: {{mpSignature}}
+Content-Type: application/json
+
+{
+  "type": "payment",
+  "data": { "id": "123456789" }
+}
+
+### Desautorização OAuth (sem HMAC; payload típico MP)
+POST {{baseUrl}}/webhooks/mercadopago/deauthorization
+Content-Type: application/json
+
+{
+  "action": "application.deauthorized",
+  "user_id": "123456789"
+}

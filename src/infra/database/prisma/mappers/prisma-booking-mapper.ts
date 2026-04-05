@@ -19,6 +19,7 @@ export class PrismaBookingMapper {
                 paymentMethod: raw.paymentMethod,
                 paymentStatus: raw.paymentStatus,
                 paymentRef: raw.paymentRef,
+                mercadoPagoPaymentId: raw.mercadoPagoPaymentId,
             },
             new UniqueEntityID(raw.id),
         );
@@ -38,6 +39,7 @@ export class PrismaBookingMapper {
             paymentMethod: booking.paymentMethod,
             paymentStatus: booking.paymentStatus,
             paymentRef: booking.paymentRef,
+            mercadoPagoPaymentId: booking.mercadoPagoPaymentId,
             createdAt: booking.createdAt,
         };
     }
