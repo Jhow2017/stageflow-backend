@@ -2,7 +2,6 @@
 #   docker network create traefik-proxy
 #
 # O backend sobe neste compose e anexa à rede `traefik-proxy` só para o proxy enxergar o serviço.
-
 services:
   backend:
     build: .
@@ -12,16 +11,17 @@ services:
       - .env
     environment:
       PORT: 3000
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/reservaestudio?schema=public
     depends_on:
       postgres:
         condition: service_healthy
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-proxy
-      - traefik.http.routers.reservaestudio.rule=Host(`reservaestudio.com`,`www.reservaestudio.com`)
-      - traefik.http.routers.reservaestudio.entrypoints=websecure
-      - traefik.http.routers.reservaestudio.tls.certresolver=letsencrypt
-      - traefik.http.services.reservaestudio.loadbalancer.server.port=3000
+      - traefik.http.routers.reservaestudio-api.rule=Host(`api.reservaestudio.com.br`)
+      - traefik.http.routers.reservaestudio-api.entrypoints=websecure
+      - traefik.http.routers.reservaestudio-api.tls.certresolver=letsencrypt
+      - traefik.http.services.reservaestudio-api.loadbalancer.server.port=3000
     networks:
       - app
       - traefik-proxy
