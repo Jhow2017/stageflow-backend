@@ -117,6 +117,8 @@ import { MercadoPagoSellerAccessTokenResolver } from '../../domain/booking/appli
 import { MercadoPagoSellerAccessTokenResolverService } from '../mercadopago/mercado-pago-seller-access-token-resolver.service';
 import { MercadoPagoBoletoBankIdConfig } from '../../domain/subscription-checkout/application/services/mercadopago-boleto-bank-id-config';
 import { EnvMercadoPagoBoletoBankIdConfigService } from '../mercadopago/env-mercadopago-boleto-bank-id-config.service';
+import { PlatformMercadoPagoPublicKey } from '../../domain/subscription-checkout/application/services/platform-mercadopago-public-key';
+import { EnvPlatformMercadoPagoPublicKeyService } from '../mercadopago/env-platform-mercadopago-public-key.service';
 import { PublicFrontendBaseUrl } from '../../domain/auth/application/services/public-frontend-base-url';
 import { EnvPublicFrontendBaseUrlService } from '../auth/env-public-frontend-base-url.service';
 import { MercadoPagoSellerBookingPaymentReader } from '../../domain/booking/application/services/mercado-pago-seller-booking-payment-reader';
@@ -219,6 +221,7 @@ import { CreateBookingMercadoPagoPaymentController } from './controllers/create-
         MercadoPagoSellerAccessTokenResolverService,
         EnvMercadoPagoBoletoBankIdConfigService,
         EnvPublicFrontendBaseUrlService,
+        EnvPlatformMercadoPagoPublicKeyService,
         {
             provide: SubscriptionCheckoutSessionsRepository,
             useClass: PrismaSubscriptionCheckoutSessionsRepository,
@@ -246,6 +249,10 @@ import { CreateBookingMercadoPagoPaymentController } from './controllers/create-
         {
             provide: PublicFrontendBaseUrl,
             useClass: EnvPublicFrontendBaseUrlService,
+        },
+        {
+            provide: PlatformMercadoPagoPublicKey,
+            useClass: EnvPlatformMercadoPagoPublicKeyService,
         },
         {
             provide: PlatformSubscriptionPaymentConfig,

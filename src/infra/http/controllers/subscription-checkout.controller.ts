@@ -5,6 +5,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
+    Inject,
     Param,
     Post,
     Req,
@@ -27,6 +28,7 @@ import { MercadoPagoSubscriptionTransparentPaymentDto } from '../dtos/mercadopag
 import { CreateMercadoPagoSubscriptionPreapprovalUseCase } from '../../../domain/subscription-checkout/application/use-cases/create-mercadopago-subscription-preapproval';
 import { AttachMercadoPagoSubscriptionPreapprovalCardUseCase } from '../../../domain/subscription-checkout/application/use-cases/attach-mercadopago-subscription-preapproval-card';
 import { CreateMercadoPagoSubscriptionTransparentPaymentUseCase } from '../../../domain/subscription-checkout/application/use-cases/create-mercadopago-subscription-transparent-payment';
+import { PlatformMercadoPagoPublicKey } from '../../../domain/subscription-checkout/application/services/platform-mercadopago-public-key';
 
 @ApiTags('Subscription Checkout')
 /** Rotas com JWT; polling do GET após checkout esgotava o limite global (10/min por IP). */
@@ -41,6 +43,8 @@ export class SubscriptionCheckoutController {
         private createMercadoPagoSubscriptionPreapprovalUseCase: CreateMercadoPagoSubscriptionPreapprovalUseCase,
         private attachMercadoPagoSubscriptionPreapprovalCardUseCase: AttachMercadoPagoSubscriptionPreapprovalCardUseCase,
         private createMercadoPagoSubscriptionTransparentPaymentUseCase: CreateMercadoPagoSubscriptionTransparentPaymentUseCase,
+        @Inject(PlatformMercadoPagoPublicKey)
+        private platformMercadoPagoPublicKey: PlatformMercadoPagoPublicKey,
     ) { }
 
     @Post('/start')
@@ -291,6 +295,12 @@ export class SubscriptionCheckoutController {
         createdAt: Date;
         updatedAt: Date;
     }) {
+        const mercadoPagoPublicKey =
+            checkoutSession.platformPaymentProvider === 'MERCADOPAGO' &&
+            checkoutSession.paymentMethod === 'CARD'
+                ? this.platformMercadoPagoPublicKey.get()
+                : null;
+
         return {
             checkout: {
                 id: checkoutSession.id.toString(),
@@ -311,6 +321,7 @@ export class SubscriptionCheckoutController {
                 platformPaymentProvider: checkoutSession.platformPaymentProvider,
                 mercadoPagoPreapprovalId: checkoutSession.mercadoPagoPreapprovalId,
                 mercadoPagoPaymentId: checkoutSession.mercadoPagoPaymentId,
+                mercadoPagoPublicKey,
                 stripeCheckoutSessionId: checkoutSession.stripeCheckoutSessionId,
                 stripeCustomerId: checkoutSession.stripeCustomerId,
                 stripeSubscriptionId: checkoutSession.stripeSubscriptionId,
